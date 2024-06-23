@@ -115,7 +115,7 @@ app.whenReady().then(async () => {
   tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'SpotSync',
+      label: filePrefix,
       enabled: false
     },
     {
