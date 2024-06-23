@@ -1,0 +1,22 @@
+appId: com.spotilocal.app
+productName: Spotilocal
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{Spotilocal*.txt,Spotilocal*.png}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+win:
+  executableName: Spotilocal
+  target: portable
+  artifactName: ${productName}-v${version}.${ext}
+npmRebuild: false
+electronDownload:
+  mirror: https://github.com/castlabs/electron-releases/releases/download/v
+publish: null
