@@ -1,16 +1,20 @@
+[![GitHub package.json version](https://img.shields.io/github/v/release/jmswrnr/spotilocal)](https://github.com/jmswrnr/spotilocal/releases/latest)
+[![Static Badge](https://img.shields.io/badge/Download-8aff80?logo=windows&logoColor=000)](https://github.com/jmswrnr/spotilocal/releases/latest)
+[![Static Badge](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/jmswrnr)
+
 # Spotilocal
 
 A simple Windows application that updates a text file with your current Spotify track!
 
 Inspired by [Snip](https://github.com/dlrudie/Snip), but using a new approach for real-time updates.
 
+# Development
+
 ## How it technically works
 
 It loads the Spotify web player in a hidden window to detect track changes and saves them to text files. 
 
 It doesn't need to send a single API request on top of the default player!
-
-# Development
 
 ## Recommended IDE Setup
 
