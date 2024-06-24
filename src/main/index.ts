@@ -2,10 +2,11 @@ import { app, BrowserWindow, ipcMain, components, Tray, Menu, shell } from 'elec
 import { join } from 'path'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon-16.png?asset'
-import { ApplicationState, Track, applicationStore } from './state'
+import { ApplicationState, Track, Album, applicationStore } from './state'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { isUpdateAvailable } from './update-check'
+import { produce } from 'immer'
 
 let tray: Tray
 let spotifyWindow: BrowserWindow
@@ -33,10 +34,10 @@ const fetchImageFromRenderer = (url: string): Promise<Uint8Array> => {
   })
 }
 
-const writeTrackImageToDisk = async (track: Track) => {
+const writeTrackImageToDisk = async (trackUri: string, imageUrl: string) => {
   await writeBlankImageToDisk()
-  const imagedata = await fetchImageFromRenderer(track.albumArtUrl)
-  if (track.uri === applicationStore.getState().savedTrackUri) {
+  const imagedata = await fetchImageFromRenderer(imageUrl)
+  if (trackUri === applicationStore.getState().savedTrackUri) {
     fs.writeFile(path.join(outputDirectory, `${filePrefix}.png`), imagedata)
   }
 }
@@ -52,23 +53,26 @@ const writeBlankImageToDisk = async () => {
 }
 
 const writeBlankToDisk = () => {
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}.txt`), ``)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Artist.txt`), ``)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Track.txt`), ``)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Album.txt`), ``)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), ``)
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}.txt`), '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Artist.txt`), '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Track.txt`), '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Album.txt`), '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), '')
   writeBlankImageToDisk()
 }
 
-const writeDataToDisk = (track: Track) => {
+const writeDataToDisk = (track: Track, album?: Album) => {
   fs.writeFile(
     path.join(outputDirectory, `${filePrefix}.txt`),
     `${track.name} - ${track.artists.join(', ')}`
   )
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Artist.txt`), track.artists.join(', '))
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Track.txt`), track.name)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Album.txt`), track.albumName)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), track.uri)
+  fs.writeFile(
+    path.join(outputDirectory, `${filePrefix}_Artist.txt`),
+    track.artists.join(', ') || ''
+  )
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Track.txt`), track.name || '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_Album.txt`), album?.name || '')
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), track.uri || '')
   writeBlankImageToDisk()
 }
 
@@ -82,17 +86,25 @@ const saveStateToDisk = (state: ApplicationState) => {
       return
     }
 
+    const album = state.albumMap[track.albumUri]
+
     applicationStore.setState({
       savedTrackUri: track.uri
     })
 
-    if (track.albumArtUrl) {
-      writeTrackImageToDisk(track)
+    const image =
+      (track.linkedFromUri && state.imageUriUrlMap[track.linkedFromUri]) ||
+      state.imageUriUrlMap[track.uri] ||
+      state.imageUriUrlMap[album?.uri] ||
+      undefined
+
+    if (image) {
+      writeTrackImageToDisk(track.uri, image)
     } else {
       writeBlankImageToDisk()
     }
 
-    writeDataToDisk(track)
+    writeDataToDisk(track, album)
   } else {
     // not playing
     if (!state.savedTrackUri) {
@@ -197,36 +209,68 @@ app.whenReady().then(async () => {
     if (!tracks || !Array.isArray(tracks)) {
       return
     }
-    applicationStore.setState((state) => ({
-      trackMap: tracks.reduce((map, track) => {
-        const cleanTrack = {
-          uri: track.uri,
-          name: track.name,
-          artists: track.artists.map((artist) => artist.name),
-          albumArtUrl: (
-            track.album.images.find((image) => image.width === 300) ?? track.album.images.at(-1)
-          )?.url,
-          albumName: track.album.name
+    applicationStore.setState(
+      produce<ApplicationState>((state) => {
+        for (const track of tracks) {
+          if (track?.uri) {
+            const cleanTrack: Track = {
+              uri: track.uri,
+              albumUri: track.album.uri,
+              name: track.name,
+              artists: track.artists.map((artist) => artist.name)
+            }
+
+            state.trackMap[cleanTrack.uri] = cleanTrack
+
+            if (track.linked_from?.uri) {
+              cleanTrack.linkedFromUri = track.linked_from.uri
+              state.trackMap[track.linked_from.uri] = cleanTrack
+            }
+          }
+
+          if (track?.album?.uri) {
+            const cleanAlbum: Album = {
+              uri: track.album.uri,
+              name: track.album.name
+            }
+
+            state.albumMap[cleanAlbum.uri] = cleanAlbum
+
+            const albumArtUrl = (
+              track.album.images.find((image) => image.width === 300) ?? track.album.images.at(-1)
+            )?.url
+
+            if (albumArtUrl) {
+              state.imageUriUrlMap[track.album.uri] = albumArtUrl
+            }
+          }
         }
-        return {
-          ...map,
-          [track.uri]: cleanTrack,
-          ...(track.linked_from?.uri && { [track.linked_from.uri]: cleanTrack })
-        }
-      }, state.trackMap)
-    }))
+      })
+    )
   })
 
   ipcMain.on('spotify-player-state', (_event, player_state) => {
     if (!player_state) {
       return
     }
-    applicationStore.setState({
-      lastUpdatedAt: parseInt(player_state.timestamp) ?? 0,
-      isPlaying: !player_state.is_paused,
-      positionMs: parseInt(player_state.position_as_of_timestamp) ?? 0,
-      currentTrackUri: player_state.track?.uri
-    })
+    applicationStore.setState(
+      produce<ApplicationState>((state) => {
+        state.lastUpdatedAt = parseInt(player_state.timestamp) || 0
+        state.isPlaying = !player_state.is_paused
+        state.positionMs = parseInt(player_state.position_as_of_timestamp) || 0
+        state.currentTrackUri = player_state.track?.uri || undefined
+        if (
+          player_state.track?.uri &&
+          player_state.track?.metadata?.image_url?.includes('spotify:image:')
+        ) {
+          state.imageUriUrlMap[player_state.track.uri] =
+            player_state.track.metadata.image_url.replace(
+              'spotify:image:',
+              'https://i.scdn.co/image/'
+            )
+        }
+      })
+    )
   })
 
   app.on('window-all-closed', () => {
