@@ -1,6 +1,6 @@
 {
   "name": "spotilocal",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "./out/main/index.js",
   "scripts": {
     "format": "prettier --write .",
