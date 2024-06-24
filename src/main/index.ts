@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, components, Tray, Menu, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, components, Tray, Menu, shell, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon-16.png?asset'
@@ -123,7 +123,15 @@ applicationStore.subscribe((state) => saveStateToDisk(state))
 writeBlankToDisk()
 
 app.whenReady().then(async () => {
-  await components.whenReady()
+  try {
+    await components.whenReady([components.WIDEVINE_CDM_ID])
+  } catch {
+    dialog.showErrorBox(
+      'Spotilocal Initialization Error',
+      'Unable to load required Widevine CDM components'
+    )
+    return app.exit(1)
+  }
 
   tray = new Tray(icon)
 
