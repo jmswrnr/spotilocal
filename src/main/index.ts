@@ -1,10 +1,11 @@
-import { app, BrowserWindow, ipcMain, components, Tray, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, components, Tray, Menu, shell } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon-16.png?asset'
 import { ApplicationState, Track, applicationStore } from './state'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { isUpdateAvailable } from './update-check'
 
 let tray: Tray
 let spotifyWindow: BrowserWindow
@@ -113,11 +114,26 @@ app.whenReady().then(async () => {
   await components.whenReady()
 
   tray = new Tray(icon)
+
+  const canUpdate = await isUpdateAvailable()
   const contextMenu = Menu.buildFromTemplate([
     {
       label: filePrefix,
       enabled: false
     },
+    canUpdate
+      ? {
+          label: 'Update Available!',
+          type: 'normal',
+          click: () => {
+            shell.openPath('https://github.com/jmswrnr/spotilocal/releases/latest')
+          }
+        }
+      : {
+          label: `v${__VERSION__}`,
+          type: 'normal',
+          enabled: false
+        },
     {
       type: 'separator'
     },
