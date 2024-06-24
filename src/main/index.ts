@@ -32,10 +32,10 @@ const fetchImageFromRenderer = (url: string): Promise<Uint8Array> => {
   })
 }
 
-const writeRemoteImageToDisk = async (uri: string, url: string) => {
+const writeTrackImageToDisk = async (track: Track) => {
   await writeBlankImageToDisk()
-  const imagedata = await fetchImageFromRenderer(url)
-  if (uri === applicationStore.getState().savedTrackUri) {
+  const imagedata = await fetchImageFromRenderer(track.albumArtUrl)
+  if (track.uri === applicationStore.getState().savedTrackUri) {
     fs.writeFile(path.join(outputDirectory, `${filePrefix}.png`), imagedata)
   }
 }
@@ -59,7 +59,7 @@ const writeBlankToDisk = () => {
   writeBlankImageToDisk()
 }
 
-const writeDataToDisk = (uri: string, track: Track) => {
+const writeDataToDisk = (track: Track) => {
   fs.writeFile(
     path.join(outputDirectory, `${filePrefix}.txt`),
     `${track.name} - ${track.artists.join(', ')}`
@@ -67,31 +67,31 @@ const writeDataToDisk = (uri: string, track: Track) => {
   fs.writeFile(path.join(outputDirectory, `${filePrefix}_Artist.txt`), track.artists.join(', '))
   fs.writeFile(path.join(outputDirectory, `${filePrefix}_Track.txt`), track.name)
   fs.writeFile(path.join(outputDirectory, `${filePrefix}_Album.txt`), track.albumName)
-  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), uri)
+  fs.writeFile(path.join(outputDirectory, `${filePrefix}_URI.txt`), track.uri)
   writeBlankImageToDisk()
 }
 
 const saveStateToDisk = (state: ApplicationState) => {
   if (state.isPlaying) {
-    if (!state.currentTrackUri || state.currentTrackUri === state.savedTrackUri) {
+    if (!state.currentTrackUri) {
       return
     }
     const track = state.trackMap[state.currentTrackUri]
-    if (!track) {
+    if (!track || track.uri === state.savedTrackUri) {
       return
     }
 
     applicationStore.setState({
-      savedTrackUri: state.currentTrackUri
+      savedTrackUri: track.uri
     })
 
     if (track.albumArtUrl) {
-      writeRemoteImageToDisk(state.currentTrackUri, track.albumArtUrl)
+      writeTrackImageToDisk(track)
     } else {
       writeBlankImageToDisk()
     }
 
-    writeDataToDisk(state.currentTrackUri, track)
+    writeDataToDisk(track)
   } else {
     // not playing
     if (!state.savedTrackUri) {
@@ -182,20 +182,22 @@ app.whenReady().then(async () => {
       return
     }
     applicationStore.setState((state) => ({
-      trackMap: tracks.reduce(
-        (map, track) => ({
+      trackMap: tracks.reduce((map, track) => {
+        const cleanTrack = {
+          uri: track.uri,
+          name: track.name,
+          artists: track.artists.map((artist) => artist.name),
+          albumArtUrl: (
+            track.album.images.find((image) => image.width === 300) ?? track.album.images.at(-1)
+          )?.url,
+          albumName: track.album.name
+        }
+        return {
           ...map,
-          [track.uri]: {
-            name: track.name,
-            artists: track.artists.map((artist) => artist.name),
-            albumArtUrl: (
-              track.album.images.find((image) => image.width === 300) ?? track.album.images.at(-1)
-            )?.url,
-            albumName: track.album.name
-          }
-        }),
-        state.trackMap
-      )
+          [track.uri]: cleanTrack,
+          ...(track.linked_from?.uri && { [track.linked_from.uri]: cleanTrack })
+        }
+      }, state.trackMap)
     }))
   })
 

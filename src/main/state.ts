@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
 export type Track = {
+  uri: string
   albumName: string
   albumArtUrl: string
   name: string
