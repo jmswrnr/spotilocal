@@ -194,7 +194,7 @@ app.whenReady().then(async () => {
 
   spotifyWindow.loadURL(__LOGIN_URL__)
 
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.spotilocal.app')
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
