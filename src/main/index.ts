@@ -1,16 +1,19 @@
-import { app, BrowserWindow, ipcMain, components, Tray, Menu, shell } from 'electron'
+import electron, { app, BrowserWindow, ipcMain, components, Tray, shell, Size } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon-16.png?asset'
 import { ApplicationState, Track, Album, applicationStore } from './state'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { isUpdateAvailable } from './update-check'
+import { autoPlacement, computePosition } from '@floating-ui/core'
 import { produce } from 'immer'
 
 let tray: Tray
 let spotifyWindow: BrowserWindow
+let settingsWindow: BrowserWindow
 
+const SETTINGS_WINDOW_SIZE: Size = { width: 220, height: 250 }
 const outputDirectory = process.env.PORTABLE_EXECUTABLE_DIR || app.getAppPath()
 const filePrefix = 'Spotilocal'
 
@@ -122,50 +125,71 @@ const saveStateToDisk = (state: ApplicationState) => {
 applicationStore.subscribe((state) => saveStateToDisk(state))
 writeBlankToDisk()
 
+const positionWindowToTray = async (window: BrowserWindow, animate?: boolean) => {
+  const [windowWidth, windowHeight] = window.getSize()
+  const position = await computePosition(
+    tray.getBounds(),
+    { width: windowWidth, height: windowHeight, x: 0, y: 0 },
+    {
+      platform: {
+        getElementRects: (data) => data,
+        getDimensions: (element) => element,
+        getClippingRect: () => ({ ...electron.screen.getPrimaryDisplay().size, x: 0, y: 0 })
+      },
+      middleware: [autoPlacement()]
+    }
+  )
+  window.setPosition(position.x, position.y, animate)
+}
+
+const toggleSettingsWindow = async () => {
+  if (settingsWindow.isVisible()) {
+    settingsWindow.hide()
+  } else {
+    positionWindowToTray(settingsWindow)
+    settingsWindow.show()
+
+    if (is.dev) {
+      settingsWindow.webContents.openDevTools({ mode: 'detach' })
+    }
+  }
+}
+
 app.whenReady().then(async () => {
   await components.whenReady()
 
-  tray = new Tray(icon)
-
-  const canUpdate = await isUpdateAvailable()
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: filePrefix,
-      enabled: false
-    },
-    canUpdate
-      ? {
-          label: 'Update Available!',
-          type: 'normal',
-          click: () => {
-            shell.openPath('https://github.com/jmswrnr/spotilocal/releases/latest')
-          }
-        }
-      : {
-          label: `v${__VERSION__}`,
-          type: 'normal',
-          enabled: false
-        },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Logout',
-      type: 'normal',
-      click: () => {
-        spotifyWindow.webContents.session.clearStorageData()
-      }
-    },
-    {
-      label: 'Exit',
-      type: 'normal',
-      click: () => {
-        app.quit()
-      }
+  settingsWindow = new BrowserWindow({
+    ...SETTINGS_WINDOW_SIZE,
+    useContentSize: true,
+    alwaysOnTop: true,
+    fullscreenable: false,
+    frame: false,
+    resizable: false,
+    show: false,
+    skipTaskbar: true,
+    transparent: true,
+    webPreferences: {
+      sandbox: false,
+      devTools: true,
+      preload: join(__dirname, '../preload/settings.js')
     }
-  ])
+  })
+  settingsWindow.setMenu(null)
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    settingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    settingsWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
 
-  tray.setContextMenu(contextMenu)
+  if (!is.dev) {
+    settingsWindow.on('blur', () => {
+      settingsWindow.hide()
+    })
+  }
+
+  tray = new Tray(icon)
+  tray.on('click', () => toggleSettingsWindow())
+  tray.on('right-click', () => toggleSettingsWindow())
 
   spotifyWindow = new BrowserWindow({
     width: 1280,
@@ -175,7 +199,6 @@ app.whenReady().then(async () => {
       sandbox: false,
       partition: 'persist:spotify',
       contextIsolation: false,
-      devTools: true,
       preload: join(__dirname, '../preload/spotify.js')
     }
   })
@@ -197,6 +220,40 @@ app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+  })
+
+  ipcMain.on('get-update', () => {
+    shell.openPath('https://github.com/jmswrnr/spotilocal/releases/latest')
+    settingsWindow.blur()
+  })
+
+  ipcMain.on('quit', () => {
+    app.quit()
+  })
+
+  ipcMain.on('resize-window', (event, width: number, height: number) => {
+    const window = BrowserWindow.fromWebContents(event.sender)
+
+    if (!window) {
+      return
+    }
+
+    window.setResizable(true)
+    window.setSize(
+      width || SETTINGS_WINDOW_SIZE.width,
+      height || SETTINGS_WINDOW_SIZE.height,
+      false
+    )
+    window.setResizable(false)
+    positionWindowToTray(window)
+  })
+
+  ipcMain.on('logout', () => {
+    spotifyWindow?.webContents.session.clearStorageData()
+    spotifyWindow?.loadURL(__LOGIN_URL__)
+    spotifyWindow?.moveTop()
+    spotifyWindow?.focus()
+    settingsWindow.blur()
   })
 
   ipcMain.on('spotify-logged-in', () => {
