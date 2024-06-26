@@ -1,6 +1,6 @@
-
 import path from 'node:path'
 import { outputDirectory } from './env'
+import type { Size } from 'electron'
 export const filePrefix = 'Spotilocal'
 
 export const txtTrack = path.join(outputDirectory, `${filePrefix}_Track.txt`)
@@ -10,5 +10,4 @@ export const txtAlbum = path.join(outputDirectory, `${filePrefix}_Album.txt`)
 export const txtMain = path.join(outputDirectory, `${filePrefix}.txt`)
 export const imgOutput = path.join(outputDirectory, `${filePrefix}.png`)
 
-export const transparent1px =
-  Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64')
+export const SETTINGS_WINDOW_SIZE: Size = { width: 220, height: 250 }

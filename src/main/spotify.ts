@@ -1,8 +1,9 @@
-import { Album, ApplicationState, ResolvedAlbum, ResolvedTrack, Track, applicationStore } from './state'
+import { applicationStore } from './state'
 import fs from 'node:fs/promises'
 import { imgOutput, txtAlbum, txtArtist, txtMain, txtTrack, txtURI } from './constants'
 import { produce } from 'immer'
 import { fetchImageFromRenderer } from '.'
+import { Album, ApplicationState, ResolvedAlbum, ResolvedTrack, Track } from '@shared/types/state'
 
 const writeTrackImageToDisk = async (imageUrl: string) => {
   const imagedata = await fetchImageFromRenderer(imageUrl)
@@ -11,8 +12,10 @@ const writeTrackImageToDisk = async (imageUrl: string) => {
   }
 }
 
-export const transparent1px =
-  Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64')
+export const transparent1px = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+  'base64'
+)
 
 const writeBlankImageToDisk = async () => {
   fs.writeFile(imgOutput, transparent1px)
