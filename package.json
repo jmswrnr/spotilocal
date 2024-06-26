@@ -10,13 +10,15 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev --watch",
-    "build": "npm run typecheck && electron-vite build",
+    "build": "npm run test && npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
-    "release:patch": "npm run typecheck && release-it patch",
-    "release:minor": "npm run typecheck && release-it minor",
-    "release:major": "npm run typecheck && release-it major"
+    "release:patch": "npm run test && npm run typecheck && release-it patch",
+    "release:minor": "npm run test && npm run typecheck && release-it minor",
+    "release:major": "npm run test && npm run typecheck && release-it major",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
@@ -43,6 +45,7 @@
     "semver": "^7.6.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
+    "vitest": "^1.6.0",
     "zustand": "^4.5.2"
   }
 }
