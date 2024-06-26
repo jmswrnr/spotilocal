@@ -9,21 +9,34 @@ export type Track = {
   artists: string[]
 }
 
+export type ResolvedTrack = Track
+
 export type Album = {
   uri: string
   name: string
 }
 
-export interface ApplicationState {
+export type ResolvedAlbum = Album & {
+  image?: string
+}
+
+export interface RemoteApplicationState {
   isLoggedIn: boolean | null
   isPlaying: boolean
   positionMs: number
   lastUpdatedAt?: number
+  currentTrack?: Track
+  currentAlbum?: ResolvedAlbum
+}
+
+export interface ApplicationState extends RemoteApplicationState {
   currentTrackUri?: string
-  trackMap: Record<string, Track>
-  albumMap: Record<string, Album>
+  trackMap: Record<string, Track | undefined>
+  albumMap: Record<string, Album | undefined>
   imageUriUrlMap: Record<string, string>
   savedTrackUri?: string
+  savedAlbumUri?: string
+  savedImageUrl?: string
 }
 
 export const applicationStore = create<ApplicationState>()(

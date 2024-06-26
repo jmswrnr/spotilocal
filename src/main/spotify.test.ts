@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import fs from 'node:fs/promises'
 
-vi.mock('./constants', () => ({
+vi.mock('./env', () => ({
   outputDirectory: '/mocked-output/dir/',
-  filePrefix: 'Spotilocal'
 }))
 
 vi.mock('./index', () => ({
@@ -84,7 +83,8 @@ const trackData = [
 ]
 
 test('Writes blank data on load', async () => {
-  expectBlankFilesWrites()
+  await expectBlankFilesWrites()
+  expect(fs.writeFile).toBeCalledTimes(6)
 })
 
 test('Handle Spotify player state update', async () => {
@@ -113,6 +113,7 @@ test('Handle Spotify player state update', async () => {
   const pausedState = applicationStore.getState()
   expect(pausedState.isPlaying).toBe(false)
   expect(pausedState.currentTrackUri).toBe(undefined)
+  expect(fs.writeFile).toBeCalledTimes(6)
 })
 
 describe('Handle Spotify track data', async () => {
@@ -143,6 +144,7 @@ describe('Handle Spotify track data', async () => {
     
     const newState = applicationStore.getState()
     expect(newState.savedTrackUri).toBe('spotify:track:1337')
+    expect(fs.writeFile).toBeCalledTimes(6)
 
     vi.resetAllMocks()
     handleSpotifyPlayerState({
@@ -151,6 +153,7 @@ describe('Handle Spotify track data', async () => {
     })
 
     expectBlankFilesWrites()
+    expect(fs.writeFile).toBeCalledTimes(6)
   })
 
   it('Updates state', () => {
