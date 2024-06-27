@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import fs from 'node:fs/promises'
+import { transparent1px } from './constants'
 
 vi.mock('./env', () => ({
   outputDirectory: '/mocked-output/dir/',
@@ -22,7 +23,6 @@ beforeEach(() => {
 })
 
 const expectBlankFilesWrites = async () => {
-  const { transparent1px } = await import('./spotify')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '')
@@ -83,7 +83,8 @@ const trackData = [
 ]
 
 test('Writes blank data on load', async () => {
-  await expectBlankFilesWrites()
+  await import('./spotify')
+  await vi.waitFor(expectBlankFilesWrites);
   expect(fs.writeFile).toBeCalledTimes(6)
 })
 

@@ -11,3 +11,8 @@ export const txtMain = path.join(outputDirectory, `${filePrefix}.txt`)
 export const imgOutput = path.join(outputDirectory, `${filePrefix}.png`)
 
 export const SETTINGS_WINDOW_SIZE: Size = { width: 220, height: 250 }
+
+export const transparent1px = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+  'base64'
+)

@@ -1,6 +1,14 @@
 import { applicationStore } from './state'
 import fs from 'node:fs/promises'
-import { imgOutput, txtAlbum, txtArtist, txtMain, txtTrack, txtURI } from './constants'
+import {
+  imgOutput,
+  transparent1px,
+  txtAlbum,
+  txtArtist,
+  txtMain,
+  txtTrack,
+  txtURI
+} from './constants'
 import { produce } from 'immer'
 import { fetchImageFromRenderer } from '.'
 import { Album, ApplicationState, ResolvedAlbum, ResolvedTrack, Track } from '@shared/types/state'
@@ -11,11 +19,6 @@ const writeTrackImageToDisk = async (imageUrl: string) => {
     fs.writeFile(imgOutput, imagedata)
   }
 }
-
-export const transparent1px = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
-  'base64'
-)
 
 const writeBlankImageToDisk = async () => {
   fs.writeFile(imgOutput, transparent1px)
