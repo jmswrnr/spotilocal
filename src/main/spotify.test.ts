@@ -37,6 +37,26 @@ const expectBlankFilesWrites = async () => {
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.png', transparent1px)
 }
 
+const expected1337TrackFileWrites = async () => {
+  expect(fs.writeFile).toBeCalledWith(
+    '\\mocked-output\\dir\\Spotilocal.txt',
+    '1337 Track - 1337 Artist'
+  )
+  expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '1337 Artist')
+  expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '1337 Track')
+  expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '1337 Album')
+  expect(fs.writeFile).toBeCalledWith(
+    '\\mocked-output\\dir\\Spotilocal_URI.txt',
+    'spotify:track:1337'
+  )
+  await vi.waitFor(() => {
+    expect(fs.writeFile).toBeCalledWith(
+      '\\mocked-output\\dir\\Spotilocal.png',
+      'mock-fetched-image-https://1337-300-test-image.png'
+    )
+  })
+}
+
 const trackData = [
   {
     uri: 'spotify:track:1337',
@@ -96,57 +116,84 @@ test('Writes blank data on load', async () => {
 
 describe('User settings', async () => {
   describe('emptyFilesWhenPaused', async () => {
-    test('disabled: do not empty files when paused', async () => {
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-      const { applicationStore } = await import('./state')
+    describe('disabled', () => {
+      test('write current track when application loaded with paused state', async () => {
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+        const { applicationStore } = await import('./state')
 
-      applicationStore.setState({
-        userSettings: {
-          emptyFilesWhenPaused: false
-        }
-      })
+        applicationStore.setState({
+          userSettings: {
+            emptyFilesWhenPaused: false
+          }
+        })
 
-      handleSpotifyTrackData(trackData)
-      handleSpotifyPlayerState({
-        timestamp: '1719432114603',
-        is_paused: false,
-        position_as_of_timestamp: 1337,
-        track: {
-          uri: 'spotify:track:1337'
-        }
+        vi.resetAllMocks()
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState({
+          timestamp: '1719432114603',
+          is_paused: true,
+          position_as_of_timestamp: 1337,
+          track: {
+            uri: 'spotify:track:1337'
+          }
+        })
+
+        await expected1337TrackFileWrites()
       })
-      vi.resetAllMocks()
-      handleSpotifyPlayerState({
-        timestamp: '1719432114604',
-        is_paused: true
+      test('do not empty files when paused', async () => {
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+        const { applicationStore } = await import('./state')
+
+        applicationStore.setState({
+          userSettings: {
+            emptyFilesWhenPaused: false
+          }
+        })
+
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState({
+          timestamp: '1719432114603',
+          is_paused: false,
+          position_as_of_timestamp: 1337,
+          track: {
+            uri: 'spotify:track:1337'
+          }
+        })
+        vi.resetAllMocks()
+        handleSpotifyPlayerState({
+          timestamp: '1719432114604',
+          is_paused: true
+        })
+        expect(fs.writeFile).not.toBeCalled()
       })
-      expect(fs.writeFile).not.toBeCalled()
     })
-    test('enabled: do empty files when paused', async () => {
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-      const { applicationStore } = await import('./state')
+    describe('enabled', () => {
+      test('do empty files when paused', async () => {
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+        const { applicationStore } = await import('./state')
 
-      applicationStore.setState({
-        userSettings: {
-          emptyFilesWhenPaused: true
-        }
-      })
+        applicationStore.setState({
+          userSettings: {
+            emptyFilesWhenPaused: true
+          }
+        })
 
-      handleSpotifyTrackData(trackData)
-      handleSpotifyPlayerState({
-        timestamp: '1719432114603',
-        is_paused: false,
-        position_as_of_timestamp: 1337,
-        track: {
-          uri: 'spotify:track:1337'
-        }
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState({
+          timestamp: '1719432114603',
+          is_paused: false,
+          position_as_of_timestamp: 1337,
+          track: {
+            uri: 'spotify:track:1337'
+          }
+        })
+        vi.resetAllMocks()
+        handleSpotifyPlayerState({
+          timestamp: '1719432114604',
+          is_paused: true
+        })
+        expectBlankFilesWrites()
       })
-      vi.resetAllMocks()
-      handleSpotifyPlayerState({
-        timestamp: '1719432114604',
-        is_paused: true
-      })
-      expectBlankFilesWrites()
     })
   })
 })
@@ -197,26 +244,7 @@ describe('Handle Spotify track data', async () => {
         uri: 'spotify:track:1337'
       }
     })
-    expect(fs.writeFile).toBeCalledWith(
-      '\\mocked-output\\dir\\Spotilocal.txt',
-      '1337 Track - 1337 Artist'
-    )
-    expect(fs.writeFile).toBeCalledWith(
-      '\\mocked-output\\dir\\Spotilocal_Artist.txt',
-      '1337 Artist'
-    )
-    expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '1337 Track')
-    expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '1337 Album')
-    expect(fs.writeFile).toBeCalledWith(
-      '\\mocked-output\\dir\\Spotilocal_URI.txt',
-      'spotify:track:1337'
-    )
-    await vi.waitFor(() => {
-      expect(fs.writeFile).toBeCalledWith(
-        '\\mocked-output\\dir\\Spotilocal.png',
-        'mock-fetched-image-https://1337-300-test-image.png'
-      )
-    })
+    await expected1337TrackFileWrites()
 
     const newState = applicationStore.getState()
     expect(newState.savedTrackUri).toBe('spotify:track:1337')

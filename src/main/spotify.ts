@@ -33,111 +33,130 @@ const writeBlankTextToDisk = async () => {
 }
 
 const saveCurrentImage = async (
+  isPlaying: boolean,
   savedImageUrl: string | undefined,
-  track: ResolvedTrack | undefined,
   album: ResolvedAlbum | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
-  if (!track && !album && savedImageUrl && emptyFilesWhenPaused) {
+  const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
+
+  if(!shouldbeEmpty && album?.image) {
+    if (savedImageUrl !== album.image) {
+      applicationStore.setState({
+        savedImageUrl: album.image
+      })
+      await writeTrackImageToDisk(album.image)
+    }
+    return
+  }
+
+  if (savedImageUrl !== undefined) {
     applicationStore.setState({
       savedImageUrl: undefined
     })
     await writeBlankImageToDisk()
-    return
-  }
-
-  if (album?.image && savedImageUrl !== album.image) {
-    applicationStore.setState({
-      savedImageUrl: album.image
-    })
-    await writeTrackImageToDisk(album.image)
-    return
   }
 }
 applicationStore.subscribe(
   (state) => ({
+    isPlaying: state.isPlaying,
     savedImageUrl: state.savedImageUrl,
-    currentTrack: state.currentTrack,
     currentAlbum: state.currentAlbum,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
   (slice) =>
     saveCurrentImage(
+      slice.isPlaying,
       slice.savedImageUrl,
-      slice.currentTrack,
       slice.currentAlbum,
       slice.emptyFilesWhenPaused
     )
 )
 
 const saveCurrentTrack = (
+  isPlaying: boolean,
   savedTrackUri: string | undefined,
   track: ResolvedTrack | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
-  if (track?.uri === savedTrackUri) {
-    return
-  }
+  const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
 
-  if (track) {
-    fs.writeFile(txtMain, `${track.name} - ${track.artists.join(', ')}`)
-    fs.writeFile(txtArtist, track.artists.join(', '))
-    fs.writeFile(txtTrack, track.name)
-    fs.writeFile(txtURI, track.uri)
-  } else if (emptyFilesWhenPaused) {
+  if (!shouldbeEmpty && track) {
+    if (savedTrackUri !== track.uri) {
+      applicationStore.setState({
+        savedTrackUri: track.uri
+      })
+      fs.writeFile(txtMain, `${track.name} - ${track.artists.join(', ')}`)
+      fs.writeFile(txtArtist, track.artists.join(', '))
+      fs.writeFile(txtTrack, track.name)
+      fs.writeFile(txtURI, track.uri)
+    }
+    return
+  } 
+  
+  if (savedTrackUri !== undefined) {
+    applicationStore.setState({
+      savedTrackUri: undefined
+    })
     fs.writeFile(txtMain, '')
     fs.writeFile(txtArtist, '')
     fs.writeFile(txtTrack, '')
     fs.writeFile(txtURI, '')
   }
-
-  applicationStore.setState({
-    savedTrackUri: track?.uri
-  })
 }
 applicationStore.subscribe(
   (state) => ({
+    isPlaying: state.isPlaying,
     savedTrackUri: state.savedTrackUri,
     currentTrack: state.currentTrack,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentTrack(slice.savedTrackUri, slice.currentTrack, slice.emptyFilesWhenPaused)
+  (slice) => saveCurrentTrack(slice.isPlaying, slice.savedTrackUri, slice.currentTrack, slice.emptyFilesWhenPaused)
 )
 
 const saveCurrentAlbum = (
+  isPlaying: boolean,
   savedAlbumUri: string | undefined,
   album: ResolvedAlbum | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
-  if (album?.uri === savedAlbumUri) {
+  const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
+
+  if (!shouldbeEmpty && album) {
+    if (savedAlbumUri !== album.uri) {
+      applicationStore.setState({
+        savedAlbumUri: album.uri
+      })
+      fs.writeFile(txtAlbum, album.name)
+    }
     return
-  }
-  if (album) {
-    fs.writeFile(txtAlbum, album.name)
-  } else if (emptyFilesWhenPaused) {
+  } 
+  
+  if (savedAlbumUri !== undefined) {
+    applicationStore.setState({
+      savedAlbumUri: undefined
+    })
     fs.writeFile(txtAlbum, '')
   }
-  applicationStore.setState({
-    savedAlbumUri: album?.uri
-  })
 }
 applicationStore.subscribe(
   (state) => ({
+    isPlaying: state.isPlaying,
     savedAlbumUri: state.savedAlbumUri,
     currentAlbum: state.currentAlbum,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentAlbum(slice.savedAlbumUri, slice.currentAlbum, slice.emptyFilesWhenPaused)
+  (slice) =>
+    saveCurrentAlbum(
+      slice.isPlaying,
+      slice.savedAlbumUri,
+      slice.currentAlbum,
+      slice.emptyFilesWhenPaused
+    )
 )
 
 const resolveCurrentState = (state: ApplicationState) => {
-  if (!state.isPlaying || !state.currentTrackUri) {
-    if (state.currentTrack || state.currentAlbum) {
-      applicationStore.setState({
-        currentTrack: undefined,
-        currentAlbum: undefined
-      })
-    }
+  if (!state.currentTrackUri) {
     return
   }
 
