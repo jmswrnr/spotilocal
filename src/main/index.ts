@@ -10,6 +10,8 @@ import { ApplicationState, RemoteApplicationState } from '@shared/types/state'
 import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
 
+app.commandLine.appendSwitch('wm-window-animations-disabled')
+
 let tray: Tray
 let spotifyWindow: BrowserWindow
 let settingsWindow: BrowserWindow
@@ -34,7 +36,7 @@ export const fetchImageFromRenderer = (url: string): Promise<Uint8Array> => {
   })
 }
 
-const positionWindowToTray = async (window: BrowserWindow, animate?: boolean) => {
+const positionWindowToTray = async (window: BrowserWindow, animate: boolean = false) => {
   const [windowWidth, windowHeight] = window.getSize()
   const position = await computePosition(
     tray.getBounds(),
@@ -55,7 +57,7 @@ const toggleSettingsWindow = async () => {
   if (settingsWindow.isVisible()) {
     settingsWindow.hide()
   } else {
-    positionWindowToTray(settingsWindow)
+    await positionWindowToTray(settingsWindow)
     settingsWindow.show()
 
     if (is.dev) {
