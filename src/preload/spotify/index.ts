@@ -4,9 +4,18 @@ if (window.fetch.toString().includes('native')) {
   const superFetch = window.fetch
   window.fetch = async (...args) => {
     const response = await superFetch(...args)
-    if (typeof args?.[0] === 'string' && args[0].includes('/v1/tracks')) {
-      const tracks = (await response.json())?.tracks
-      tracks && ipcRenderer.send('spotify-track-data', tracks)
+    try {
+      if (typeof args?.[0] === 'string') {
+        if (args[0].includes('/v1/tracks')) {
+          const tracks = (await response.clone().json())?.tracks
+          tracks && ipcRenderer.send('spotify-track-data', tracks)
+        } else if (args[0].includes('/connect-state/v1')) {
+          const player_state = (await response.clone().json())?.player_state
+          player_state && ipcRenderer.send('spotify-player-state', player_state)
+        }
+      }
+    } catch {
+      // error
     }
     return response
   }
