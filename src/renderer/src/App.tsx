@@ -10,7 +10,11 @@ export const App = () => {
   }))
 
   useEffect(() => {
-    window.electron.ipcRenderer.send('resize-window', bounds.width, bounds.height)
+    window.electron.ipcRenderer.send(
+      'resize-window',
+      Math.ceil(bounds.width),
+      Math.ceil(bounds.height)
+    )
   }, [bounds.width, bounds.height])
 
   return (
