@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import useMeasure from 'react-use-measure'
 import { useRemoteApplicationStore } from './useReadApplicationState'
 
@@ -9,12 +9,8 @@ export const App = () => {
     isLoggedIn: state?.isLoggedIn
   }))
 
-  useEffect(() => {
-    window.electron.ipcRenderer.send(
-      'resize-window',
-      Math.ceil(bounds.width),
-      Math.ceil(bounds.height)
-    )
+  useLayoutEffect(() => {
+    window.resizeTo(Math.ceil(bounds.width), Math.ceil(bounds.height))
   }, [bounds.width, bounds.height])
 
   return (

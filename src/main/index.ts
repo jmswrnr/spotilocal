@@ -113,6 +113,9 @@ app.whenReady().then(async () => {
   } else {
     settingsWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  settingsWindow.on('resize', () => {
+    positionWindowToTray(settingsWindow)
+  })
 
   if (!is.dev) {
     settingsWindow.on('blur', () => {
@@ -184,23 +187,6 @@ app.whenReady().then(async () => {
     spotifyWindow.destroy()
     settingsWindow.destroy()
     app.quit()
-  })
-
-  ipcMain.on('resize-window', (event, width: number, height: number) => {
-    const window = BrowserWindow.fromWebContents(event.sender)
-
-    if (!window) {
-      return
-    }
-
-    window.setResizable(true)
-    window.setSize(
-      width || SETTINGS_WINDOW_SIZE.width,
-      height || SETTINGS_WINDOW_SIZE.height,
-      false
-    )
-    window.setResizable(false)
-    positionWindowToTray(window)
   })
 
   ipcMain.on('logout', async () => {
