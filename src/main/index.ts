@@ -6,7 +6,7 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { applicationStore, remoteStateSlice } from './state'
 import { isUpdateAvailable as getIsUpdateAvailable } from './update-check'
 import { autoPlacement, computePosition } from '@floating-ui/core'
-import { ApplicationState, RemoteApplicationState } from '@shared/types/state'
+import { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
 import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
 
@@ -168,10 +168,13 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  ipcMain.on('set-test', (_event, test: boolean) => {
+  ipcMain.on('set-user-settings', (_event, patch: Partial<UserSettings>) => {
     applicationStore.setState(
       produce<ApplicationState>((state) => {
-        state.userSettings.test = test
+        state.userSettings = {
+          ...state.userSettings,
+          ...patch
+        }
       })
     )
   })

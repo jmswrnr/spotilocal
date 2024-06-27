@@ -94,6 +94,63 @@ test('Writes blank data on load', async () => {
   expect(fs.writeFile).toBeCalledTimes(6)
 })
 
+describe('User settings', async () => {
+  describe('emptyFilesWhenPaused', async () => {
+    test('disabled: do not empty files when paused', async () => {
+      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+      const { applicationStore } = await import('./state')
+
+      applicationStore.setState({
+        userSettings: {
+          emptyFilesWhenPaused: false
+        }
+      })
+
+      handleSpotifyTrackData(trackData)
+      handleSpotifyPlayerState({
+        timestamp: '1719432114603',
+        is_paused: false,
+        position_as_of_timestamp: 1337,
+        track: {
+          uri: 'spotify:track:1337'
+        }
+      })
+      vi.resetAllMocks()
+      handleSpotifyPlayerState({
+        timestamp: '1719432114604',
+        is_paused: true
+      })
+      expect(fs.writeFile).not.toBeCalled()
+    })
+    test('enabled: do empty files when paused', async () => {
+      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+      const { applicationStore } = await import('./state')
+
+      applicationStore.setState({
+        userSettings: {
+          emptyFilesWhenPaused: true
+        }
+      })
+
+      handleSpotifyTrackData(trackData)
+      handleSpotifyPlayerState({
+        timestamp: '1719432114603',
+        is_paused: false,
+        position_as_of_timestamp: 1337,
+        track: {
+          uri: 'spotify:track:1337'
+        }
+      })
+      vi.resetAllMocks()
+      handleSpotifyPlayerState({
+        timestamp: '1719432114604',
+        is_paused: true
+      })
+      expectBlankFilesWrites()
+    })
+  })
+})
+
 test('Handle Spotify player state update', async () => {
   const { handleSpotifyPlayerState } = await import('./spotify')
   const { applicationStore } = await import('./state')

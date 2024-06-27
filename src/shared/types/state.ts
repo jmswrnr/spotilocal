@@ -1,4 +1,3 @@
-
 export type Track = {
   uri: string
   linkedFromUri?: string
@@ -19,7 +18,7 @@ export type ResolvedAlbum = Album & {
 }
 
 export type UserSettings = {
-  test: boolean
+  emptyFilesWhenPaused: boolean
 }
 
 export interface RemoteApplicationState {

@@ -35,9 +35,10 @@ const writeBlankTextToDisk = async () => {
 const saveCurrentImage = async (
   savedImageUrl: string | undefined,
   track: ResolvedTrack | undefined,
-  album: ResolvedAlbum | undefined
+  album: ResolvedAlbum | undefined,
+  emptyFilesWhenPaused: boolean
 ) => {
-  if (!track && !album && savedImageUrl) {
+  if (!track && !album && savedImageUrl && emptyFilesWhenPaused) {
     applicationStore.setState({
       savedImageUrl: undefined
     })
@@ -57,19 +58,38 @@ applicationStore.subscribe(
   (state) => ({
     savedImageUrl: state.savedImageUrl,
     currentTrack: state.currentTrack,
-    currentAlbum: state.currentAlbum
+    currentAlbum: state.currentAlbum,
+    emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentImage(slice.savedImageUrl, slice.currentTrack, slice.currentAlbum)
+  (slice) =>
+    saveCurrentImage(
+      slice.savedImageUrl,
+      slice.currentTrack,
+      slice.currentAlbum,
+      slice.emptyFilesWhenPaused
+    )
 )
 
-const saveCurrentTrack = (savedTrackUri: string | undefined, track: ResolvedTrack | undefined) => {
+const saveCurrentTrack = (
+  savedTrackUri: string | undefined,
+  track: ResolvedTrack | undefined,
+  emptyFilesWhenPaused: boolean
+) => {
   if (track?.uri === savedTrackUri) {
     return
   }
-  fs.writeFile(txtMain, track ? `${track.name} - ${track.artists.join(', ')}` : '')
-  fs.writeFile(txtArtist, track ? track.artists.join(', ') : '')
-  fs.writeFile(txtTrack, track?.name || '')
-  fs.writeFile(txtURI, track?.uri || '')
+
+  if (track) {
+    fs.writeFile(txtMain, `${track.name} - ${track.artists.join(', ')}`)
+    fs.writeFile(txtArtist, track.artists.join(', '))
+    fs.writeFile(txtTrack, track.name)
+    fs.writeFile(txtURI, track.uri)
+  } else if (emptyFilesWhenPaused) {
+    fs.writeFile(txtMain, '')
+    fs.writeFile(txtArtist, '')
+    fs.writeFile(txtTrack, '')
+    fs.writeFile(txtURI, '')
+  }
 
   applicationStore.setState({
     savedTrackUri: track?.uri
@@ -78,16 +98,25 @@ const saveCurrentTrack = (savedTrackUri: string | undefined, track: ResolvedTrac
 applicationStore.subscribe(
   (state) => ({
     savedTrackUri: state.savedTrackUri,
-    currentTrack: state.currentTrack
+    currentTrack: state.currentTrack,
+    emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentTrack(slice.savedTrackUri, slice.currentTrack)
+  (slice) => saveCurrentTrack(slice.savedTrackUri, slice.currentTrack, slice.emptyFilesWhenPaused)
 )
 
-const saveCurrentAlbum = (savedAlbumUri: string | undefined, album: ResolvedAlbum | undefined) => {
+const saveCurrentAlbum = (
+  savedAlbumUri: string | undefined,
+  album: ResolvedAlbum | undefined,
+  emptyFilesWhenPaused: boolean
+) => {
   if (album?.uri === savedAlbumUri) {
     return
   }
-  fs.writeFile(txtAlbum, album?.name || '')
+  if (album) {
+    fs.writeFile(txtAlbum, album.name)
+  } else if (emptyFilesWhenPaused) {
+    fs.writeFile(txtAlbum, '')
+  }
   applicationStore.setState({
     savedAlbumUri: album?.uri
   })
@@ -95,9 +124,10 @@ const saveCurrentAlbum = (savedAlbumUri: string | undefined, album: ResolvedAlbu
 applicationStore.subscribe(
   (state) => ({
     savedAlbumUri: state.savedAlbumUri,
-    currentAlbum: state.currentAlbum
+    currentAlbum: state.currentAlbum,
+    emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentAlbum(slice.savedAlbumUri, slice.currentAlbum)
+  (slice) => saveCurrentAlbum(slice.savedAlbumUri, slice.currentAlbum, slice.emptyFilesWhenPaused)
 )
 
 const resolveCurrentState = (state: ApplicationState) => {

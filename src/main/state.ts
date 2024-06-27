@@ -1,4 +1,4 @@
-import type { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
+import type { ApplicationState, RemoteApplicationState } from '@shared/types/state'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { settingsDiskStore } from './disk-storage'
@@ -24,7 +24,7 @@ export const applicationStore = create<ApplicationState>()(
     albumMap: {},
     imageUriUrlMap: {},
     userSettings: {
-      test: false,
+      emptyFilesWhenPaused: true,
       ...settingsDiskStore.store
     }
   }))
