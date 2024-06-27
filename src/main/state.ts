@@ -1,8 +1,14 @@
-import type { ApplicationState, RemoteApplicationState } from '@shared/types/state'
+import type { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
-export const remoteStateSlice = (state: ApplicationState):RemoteApplicationState => ({
+import Store from 'electron-store'
+
+const settingsDiskStore = new Store<Partial<UserSettings>>({
+  name: 'settings'
+})
+
+export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
   isUpdateAvailable: state.isUpdateAvailable,
   isLoggedIn: state.isLoggedIn,
   isPlaying: state.isPlaying,
@@ -23,7 +29,15 @@ export const applicationStore = create<ApplicationState>()(
     albumMap: {},
     imageUriUrlMap: {},
     userSettings: {
-      test: false
+      test: false,
+      ...settingsDiskStore.store
     }
   }))
+)
+
+applicationStore.subscribe(
+  (state) => state.userSettings,
+  (userSettings) => {
+    settingsDiskStore.store = userSettings
+  }
 )

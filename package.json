@@ -35,6 +35,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "electron": "github:castlabs/electron-releases#v28.2.10+wvcus",
     "electron-builder": "^24.9.1",
+    "electron-store": "^10.0.0",
     "electron-vite": "^2.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
