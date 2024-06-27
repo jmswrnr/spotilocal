@@ -1,12 +1,7 @@
 import type { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-
-import Store from 'electron-store'
-
-const settingsDiskStore = new Store<Partial<UserSettings>>({
-  name: 'settings'
-})
+import { settingsDiskStore } from './disk-storage'
 
 export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
   isUpdateAvailable: state.isUpdateAvailable,

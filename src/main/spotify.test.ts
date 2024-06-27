@@ -3,12 +3,18 @@ import fs from 'node:fs/promises'
 import { transparent1px } from './constants'
 
 vi.mock('./env', () => ({
-  outputDirectory: '/mocked-output/dir/',
+  outputDirectory: '/mocked-output/dir/'
 }))
 
 vi.mock('./index', () => ({
   fetchImageFromRenderer: (url: string) =>
     new Promise((resolve) => resolve('mock-fetched-image-' + url))
+}))
+
+vi.mock('./disk-storage', () => ({
+  settingsDiskStore: {
+    store: {}
+  }
 }))
 
 vi.mock('node:fs/promises', () => ({
@@ -84,7 +90,7 @@ const trackData = [
 
 test('Writes blank data on load', async () => {
   await import('./spotify')
-  await vi.waitFor(expectBlankFilesWrites);
+  await vi.waitFor(expectBlankFilesWrites)
   expect(fs.writeFile).toBeCalledTimes(6)
 })
 
@@ -134,15 +140,27 @@ describe('Handle Spotify track data', async () => {
         uri: 'spotify:track:1337'
       }
     })
-    expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.txt', '1337 Track - 1337 Artist')
-    expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '1337 Artist')
+    expect(fs.writeFile).toBeCalledWith(
+      '\\mocked-output\\dir\\Spotilocal.txt',
+      '1337 Track - 1337 Artist'
+    )
+    expect(fs.writeFile).toBeCalledWith(
+      '\\mocked-output\\dir\\Spotilocal_Artist.txt',
+      '1337 Artist'
+    )
     expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '1337 Track')
     expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '1337 Album')
-    expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_URI.txt', 'spotify:track:1337')
+    expect(fs.writeFile).toBeCalledWith(
+      '\\mocked-output\\dir\\Spotilocal_URI.txt',
+      'spotify:track:1337'
+    )
     await vi.waitFor(() => {
-      expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.png', 'mock-fetched-image-https://1337-300-test-image.png')
+      expect(fs.writeFile).toBeCalledWith(
+        '\\mocked-output\\dir\\Spotilocal.png',
+        'mock-fetched-image-https://1337-300-test-image.png'
+      )
     })
-    
+
     const newState = applicationStore.getState()
     expect(newState.savedTrackUri).toBe('spotify:track:1337')
     expect(fs.writeFile).toBeCalledTimes(6)
@@ -150,7 +168,7 @@ describe('Handle Spotify track data', async () => {
     vi.resetAllMocks()
     handleSpotifyPlayerState({
       timestamp: '1719432114604',
-      is_paused: true,
+      is_paused: true
     })
 
     expectBlankFilesWrites()
