@@ -5,9 +5,31 @@
 
 # Spotilocal
 
-A simple Windows application that updates a text file with your current Spotify track!
+A simple Windows application that saves your current Spotify track information to text and image files!
 
 Inspired by [Snip](https://github.com/dlrudie/Snip), but using a new approach for real-time updates.
+
+- ⚡ Real-time instant updates of track information (< 1s delay)
+- 💻 Runs in the background, find it in the system tray
+
+## Options
+
+- **Empty files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
+
+## Future feature ideas:
+
+- Custom templating for text files
+- Specify which image resolutions you want to save, if any
+- Custom output directory?
+- Previous / Next tracks
+- Display track information in settings menu?
+- Display track controls in settings menu?
+- Spotilocal REST API
+- Spotilocal WebSockets API
+- Support local track metadata and cover art
+- Add support Podcast episode track data
+- Add support Audiobook track data
+- Explore supporting other platforms
 
 # Development
 
