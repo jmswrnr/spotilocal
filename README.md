@@ -7,12 +7,12 @@
 
 A simple Windows application that saves your current Spotify track information to text and image files!
 
-Inspired by [Snip](https://github.com/dlrudie/Snip), but using a new approach for real-time updates.
+Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different approach for faster updates.
 
-- ⚡ Real-time instant updates of track information (< 1s delay)
-- 💻 Runs in the background, find it in the system tray
+- ⚡ Real-time updates of track information; < 1s delay, no rate limiting
+- 💻 Runs in the background; find it in the system tray
 
-## Options
+## Settings
 
 - **Empty files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
 
@@ -29,7 +29,7 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a new approach fo
 - Support local track metadata and cover art
 - Add support Podcast episode track data
 - Add support Audiobook track data
-- Explore supporting other platforms
+- Explore supporting macOS / Linux
 
 # Development
 
