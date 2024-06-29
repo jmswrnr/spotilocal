@@ -74,7 +74,8 @@ const trackData = [
     },
     artists: [
       {
-        name: '1337 Artist'
+        name: '1337 Artist',
+        uri: 'spotify:artist:1337'
       }
     ]
   },
@@ -99,7 +100,8 @@ const trackData = [
     },
     artists: [
       {
-        name: '888 Artist'
+        name: '888 Artist',
+        uri: 'spotify:artist:888'
       }
     ],
     linked_from: {
@@ -239,7 +241,10 @@ describe('User settings', async () => {
             '    "albumUri": "spotify:album:1337",\n' +
             '    "name": "1337 Track",\n' +
             '    "artists": [\n' +
-            '      "1337 Artist"\n' +
+            '      {\n' +
+            '        "name": "1337 Artist",\n' +
+            '        "uri": "spotify:artist:1337"\n' +
+            '      }\n' +
             '    ]\n' +
             '  },\n' +
             '  "currentAlbum": {\n' +
@@ -333,7 +338,10 @@ describe('Handle Spotify track data', async () => {
         "spotify:track:1234": {
           "albumUri": "spotify:album:888",
           "artists": [
-            "888 Artist",
+            {
+              "name": "888 Artist",
+              "uri": "spotify:artist:888",
+            },
           ],
           "linkedFromUri": "spotify:track:1234",
           "name": "888 Track",
@@ -342,7 +350,10 @@ describe('Handle Spotify track data', async () => {
         "spotify:track:1337": {
           "albumUri": "spotify:album:1337",
           "artists": [
-            "1337 Artist",
+            {
+              "name": "1337 Artist",
+              "uri": "spotify:artist:1337",
+            },
           ],
           "name": "1337 Track",
           "uri": "spotify:track:1337",
@@ -350,7 +361,10 @@ describe('Handle Spotify track data', async () => {
         "spotify:track:888": {
           "albumUri": "spotify:album:888",
           "artists": [
-            "888 Artist",
+            {
+              "name": "888 Artist",
+              "uri": "spotify:artist:888",
+            },
           ],
           "linkedFromUri": "spotify:track:1234",
           "name": "888 Track",

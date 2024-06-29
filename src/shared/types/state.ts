@@ -1,9 +1,14 @@
+export type Artist = {
+  uri: string
+  name: string
+}
+
 export type Track = {
   uri: string
   linkedFromUri?: string
   albumUri: string
   name: string
-  artists: string[]
+  artists: Artist[]
 }
 
 export type ResolvedTrack = Track

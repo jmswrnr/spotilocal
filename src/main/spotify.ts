@@ -94,8 +94,11 @@ const saveCurrentTrack = (
       applicationStore.setState({
         savedTrackUri: track.uri
       })
-      fs.writeFile(txtMain, `${track.name} - ${track.artists.join(', ')}`)
-      fs.writeFile(txtArtist, track.artists.join(', '))
+      fs.writeFile(
+        txtMain,
+        `${track.name} - ${track.artists.map((artist) => artist.name).join(', ')}`
+      )
+      fs.writeFile(txtArtist, track.artists.map((artist) => artist.name).join(', '))
       fs.writeFile(txtTrack, track.name)
       fs.writeFile(txtURI, track.uri)
     }
@@ -241,7 +244,10 @@ export const handleSpotifyTrackData = (tracks: any[]) => {
             uri: track.uri,
             albumUri: track.album.uri,
             name: track.name,
-            artists: track.artists.map((artist) => artist.name)
+            artists: track.artists.map((artist) => ({
+              name: artist.name,
+              uri: artist.uri
+            }))
           }
 
           state.trackMap[cleanTrack.uri] = cleanTrack
