@@ -8,6 +8,7 @@ export const txtURI = path.join(outputDirectory, `${filePrefix}_URI.txt`)
 export const txtArtist = path.join(outputDirectory, `${filePrefix}_Artist.txt`)
 export const txtAlbum = path.join(outputDirectory, `${filePrefix}_Album.txt`)
 export const txtMain = path.join(outputDirectory, `${filePrefix}.txt`)
+export const jsonOutput = path.join(outputDirectory, `${filePrefix}.json`)
 export const imgOutput = path.join(outputDirectory, `${filePrefix}.png`)
 
 export const SETTINGS_WINDOW_SIZE: Size = { width: 220, height: 250 }

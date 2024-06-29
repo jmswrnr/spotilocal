@@ -19,17 +19,21 @@ export type ResolvedAlbum = Album & {
 
 export type UserSettings = {
   emptyFilesWhenPaused: boolean
+  saveJsonFile: boolean
 }
 
-export interface RemoteApplicationState {
-  isUpdateAvailable: boolean | null
-  isLoggedIn: boolean | null
+export interface UserExposedState {
   isPlaying: boolean
   positionMs: number
   durationMs: number
   lastUpdatedAt?: number
   currentTrack?: Track
   currentAlbum?: ResolvedAlbum
+}
+
+export interface RemoteApplicationState extends UserExposedState {
+  isUpdateAvailable: boolean | null
+  isLoggedIn: boolean | null
   userSettings: UserSettings
 }
 

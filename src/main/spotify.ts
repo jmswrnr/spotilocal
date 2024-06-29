@@ -1,7 +1,8 @@
-import { applicationStore } from './state'
+import { applicationStore, userStateSlice } from './state'
 import fs from 'node:fs/promises'
 import {
   imgOutput,
+  jsonOutput,
   transparent1px,
   txtAlbum,
   txtArtist,
@@ -11,7 +12,14 @@ import {
 } from './constants'
 import { produce } from 'immer'
 import { fetchImageFromRenderer } from '.'
-import { Album, ApplicationState, ResolvedAlbum, ResolvedTrack, Track } from '@shared/types/state'
+import {
+  Album,
+  ApplicationState,
+  ResolvedAlbum,
+  ResolvedTrack,
+  Track,
+  UserExposedState
+} from '@shared/types/state'
 
 const writeTrackImageToDisk = async (imageUrl: string) => {
   const imagedata = await fetchImageFromRenderer(imageUrl)
@@ -203,6 +211,20 @@ const resolveCurrentState = (state: ApplicationState) => {
 }
 
 applicationStore.subscribe((state) => resolveCurrentState(state))
+
+const handleRemoteStateSliceUpdate = (slice: UserExposedState, saveJsonFile: boolean) => {
+  if (saveJsonFile) {
+    fs.writeFile(jsonOutput, JSON.stringify(slice, null, 2))
+  }
+}
+
+applicationStore.subscribe(
+  (state) => ({
+    slice: userStateSlice(state),
+    saveJsonFile: state.userSettings.saveJsonFile
+  }),
+  (data) => handleRemoteStateSliceUpdate(data.slice, data.saveJsonFile)
+)
 
 writeBlankImageToDisk()
 writeBlankTextToDisk()

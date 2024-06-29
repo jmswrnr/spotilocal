@@ -1,18 +1,26 @@
-import type { ApplicationState, RemoteApplicationState } from '@shared/types/state'
+import type {
+  ApplicationState,
+  RemoteApplicationState,
+  UserExposedState
+} from '@shared/types/state'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { settingsDiskStore } from './disk-storage'
 
-export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
-  isUpdateAvailable: state.isUpdateAvailable,
-  isLoggedIn: state.isLoggedIn,
+export const userStateSlice = (state: RemoteApplicationState): UserExposedState => ({
   isPlaying: state.isPlaying,
   positionMs: state.positionMs,
   durationMs: state.durationMs,
   lastUpdatedAt: state.lastUpdatedAt,
   currentTrack: state.currentTrack,
-  currentAlbum: state.currentAlbum,
-  userSettings: state.userSettings
+  currentAlbum: state.currentAlbum
+})
+
+export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
+  isUpdateAvailable: state.isUpdateAvailable,
+  isLoggedIn: state.isLoggedIn,
+  userSettings: state.userSettings,
+  ...userStateSlice(state)
 })
 
 export const applicationStore = create<ApplicationState>()(
@@ -27,6 +35,7 @@ export const applicationStore = create<ApplicationState>()(
     imageUriUrlMap: {},
     userSettings: {
       emptyFilesWhenPaused: true,
+      saveJsonFile: false,
       ...settingsDiskStore.store
     }
   }))

@@ -123,7 +123,8 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
-            emptyFilesWhenPaused: false
+            emptyFilesWhenPaused: false,
+            saveJsonFile: false
           }
         })
 
@@ -147,7 +148,8 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
-            emptyFilesWhenPaused: false
+            emptyFilesWhenPaused: false,
+            saveJsonFile: false
           }
         })
 
@@ -176,7 +178,8 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
-            emptyFilesWhenPaused: true
+            emptyFilesWhenPaused: true,
+            saveJsonFile: false
           }
         })
 
@@ -198,6 +201,57 @@ describe('User settings', async () => {
       })
     })
   })
+
+  describe('saveJsonFile', async () => {
+    describe('enabled', () => {
+      test('write state to json file', async () => {
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
+        const { applicationStore } = await import('./state')
+
+        applicationStore.setState({
+          userSettings: {
+            emptyFilesWhenPaused: false,
+            saveJsonFile: true
+          }
+        })
+
+        vi.resetAllMocks()
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState({
+          timestamp: '1719432114603',
+          is_paused: true,
+          position_as_of_timestamp: '1337',
+          duration: '2000',
+          track: {
+            uri: 'spotify:track:1337'
+          }
+        })
+
+        expect(fs.writeFile).toBeCalledWith(
+          '\\mocked-output\\dir\\Spotilocal.json',
+          '{\n' +
+            '  "isPlaying": false,\n' +
+            '  "positionMs": 1337,\n' +
+            '  "durationMs": 2000,\n' +
+            '  "lastUpdatedAt": 1719432114603,\n' +
+            '  "currentTrack": {\n' +
+            '    "uri": "spotify:track:1337",\n' +
+            '    "albumUri": "spotify:album:1337",\n' +
+            '    "name": "1337 Track",\n' +
+            '    "artists": [\n' +
+            '      "1337 Artist"\n' +
+            '    ]\n' +
+            '  },\n' +
+            '  "currentAlbum": {\n' +
+            '    "uri": "spotify:album:1337",\n' +
+            '    "name": "1337 Album",\n' +
+            '    "image": "https://1337-300-test-image.png"\n' +
+            '  }\n' +
+            '}'
+        )
+      })
+    })
+  })
 })
 
 test('Handle Spotify player state update', async () => {
@@ -205,6 +259,12 @@ test('Handle Spotify player state update', async () => {
   const { applicationStore } = await import('./state')
   const initState = applicationStore.getState()
   expect(initState.isPlaying).toBe(false)
+  applicationStore.setState({
+    userSettings: {
+      emptyFilesWhenPaused: false,
+      saveJsonFile: false
+    }
+  })
   handleSpotifyPlayerState({
     timestamp: '1719432114603',
     is_paused: false,

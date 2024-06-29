@@ -4,13 +4,13 @@ import { useRemoteApplicationStore } from './useReadApplicationState'
 
 export const App = () => {
   const [ref, bounds] = useMeasure()
-  const { isUpdateAvailable, isLoggedIn, emptyFilesWhenPaused } = useRemoteApplicationStore(
-    (state) => ({
+  const { isUpdateAvailable, isLoggedIn, emptyFilesWhenPaused, saveJsonFile } =
+    useRemoteApplicationStore((state) => ({
       isUpdateAvailable: state?.isUpdateAvailable,
       isLoggedIn: state?.isLoggedIn,
-      emptyFilesWhenPaused: state?.userSettings.emptyFilesWhenPaused
-    })
-  )
+      emptyFilesWhenPaused: state?.userSettings.emptyFilesWhenPaused,
+      saveJsonFile: state?.userSettings.saveJsonFile
+    }))
 
   useLayoutEffect(() => {
     window.resizeTo(Math.ceil(bounds.width), Math.ceil(bounds.height))
@@ -33,7 +33,24 @@ export const App = () => {
               <input type="checkbox" checked={emptyFilesWhenPaused} readOnly />
             ) : null}
           </div>
-          <div className="text"> Empty files when paused</div>
+          <div className="text"> Empty content files when paused</div>
+        </button>
+      </div>
+      <div className="section-area">
+        <button
+          className="button"
+          onClick={() =>
+            window.electron.ipcRenderer.send('set-user-settings', {
+              saveJsonFile: !saveJsonFile
+            })
+          }
+        >
+          <div className="icon">
+            {typeof saveJsonFile !== 'undefined' ? (
+              <input type="checkbox" checked={saveJsonFile} readOnly />
+            ) : null}
+          </div>
+          <div className="text"> Save JSON state file</div>
         </button>
       </div>
       <div className="section-area">
