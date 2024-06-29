@@ -66,9 +66,19 @@ const trackData = [
       name: '1337 Album',
       images: [
         {
+          width: 64,
+          height: 64,
+          url: 'https://1337-64-test-image.png'
+        },
+        {
           width: 300,
           height: 300,
           url: 'https://1337-300-test-image.png'
+        },
+        {
+          width: 640,
+          height: 640,
+          url: 'https://1337-640-test-image.png'
         }
       ]
     },
@@ -87,14 +97,19 @@ const trackData = [
       name: '888 Album',
       images: [
         {
-          width: 1024,
-          height: 1024,
-          url: 'https://888-1024-test-image.png'
+          width: 32,
+          height: 32,
+          url: 'https://1337-32-test-image.png'
         },
         {
-          width: 64,
-          height: 64,
-          url: 'https://888-64-test-image.png'
+          width: 150,
+          height: 150,
+          url: 'https://1337-150-test-image.png'
+        },
+        {
+          width: 320,
+          height: 320,
+          url: 'https://1337-320-test-image.png'
         }
       ]
     },
@@ -250,7 +265,9 @@ describe('User settings', async () => {
             '  "currentAlbum": {\n' +
             '    "uri": "spotify:album:1337",\n' +
             '    "name": "1337 Album",\n' +
-            '    "image": "https://1337-300-test-image.png"\n' +
+            '    "image_small": "https://1337-64-test-image.png",\n' +
+            '    "image_medium": "https://1337-300-test-image.png",\n' +
+            '    "image_large": "https://1337-640-test-image.png"\n' +
             '  }\n' +
             '}'
         )
@@ -386,8 +403,16 @@ describe('Handle Spotify track data', async () => {
     `)
     expect(newState.imageUriUrlMap).toMatchInlineSnapshot(`
       {
-        "spotify:album:1337": "https://1337-300-test-image.png",
-        "spotify:album:888": "https://888-64-test-image.png",
+        "spotify:album:1337": {
+          "image_large": "https://1337-640-test-image.png",
+          "image_medium": "https://1337-300-test-image.png",
+          "image_small": "https://1337-64-test-image.png",
+        },
+        "spotify:album:888": {
+          "image_large": "https://1337-320-test-image.png",
+          "image_medium": "https://1337-150-test-image.png",
+          "image_small": "https://1337-32-test-image.png",
+        },
       }
     `)
   })

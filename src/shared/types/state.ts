@@ -18,9 +18,13 @@ export type Album = {
   name: string
 }
 
-export type ResolvedAlbum = Album & {
-  image?: string
+export type Images = {
+  image_small?: string
+  image_medium?: string
+  image_large?: string
 }
+
+export type ResolvedAlbum = Album & Partial<Images>
 
 export type UserSettings = {
   emptyFilesWhenPaused: boolean
@@ -46,7 +50,7 @@ export interface ApplicationState extends RemoteApplicationState {
   currentTrackUri?: string
   trackMap: Record<string, Track | undefined>
   albumMap: Record<string, Album | undefined>
-  imageUriUrlMap: Record<string, string>
+  imageUriUrlMap: Record<string, Images>
   savedTrackUri?: string
   savedAlbumUri?: string
   savedImageUrl?: string

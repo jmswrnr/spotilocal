@@ -48,12 +48,12 @@ const saveCurrentImage = async (
 ) => {
   const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
 
-  if (!shouldbeEmpty && album?.image) {
-    if (savedImageUrl !== album.image) {
+  if (!shouldbeEmpty && album?.image_medium) {
+    if (savedImageUrl !== album.image_medium) {
       applicationStore.setState({
-        savedImageUrl: album.image
+        savedImageUrl: album.image_medium
       })
-      await writeTrackImageToDisk(album.image)
+      await writeTrackImageToDisk(album.image_medium)
     }
     return
   }
@@ -194,15 +194,18 @@ const resolveCurrentState = (state: ApplicationState) => {
   const album = track && state.albumMap[track.albumUri]
 
   if (album) {
-    const albumImage = state.imageUriUrlMap[album.uri] || undefined
+    const albumImages = state.imageUriUrlMap[album.uri] || undefined
     if (
       album.uri !== state.currentAlbum?.uri ||
-      (state.currentAlbum && albumImage !== state.currentAlbum.image)
+      (state.currentAlbum &&
+        (albumImages?.image_small !== state.currentAlbum.image_small ||
+          albumImages?.image_medium !== state.currentAlbum.image_medium ||
+          albumImages?.image_large !== state.currentAlbum.image_large))
     ) {
       applicationStore.setState({
         currentAlbum: {
           ...album,
-          image: albumImage
+          ...albumImages
         }
       })
     }
@@ -266,12 +269,20 @@ export const handleSpotifyTrackData = (tracks: any[]) => {
 
           state.albumMap[cleanAlbum.uri] = cleanAlbum
 
-          const albumArtUrl = (
-            track.album.images.find((image) => image.width === 300) ?? track.album.images.at(-1)
-          )?.url
+          track.album.images?.sort((a, b) => {
+            return a.width - b.width
+          })
 
-          if (albumArtUrl) {
-            state.imageUriUrlMap[track.album.uri] = albumArtUrl
+          const image_small = track.album.images.at(0)?.url
+          const image_medium = track.album.images.at(1)?.url
+          const image_large = track.album.images.at(-1)?.url
+
+          if (image_small || image_medium || image_large) {
+            state.imageUriUrlMap[track.album.uri] = {
+              image_small: image_small || image_medium || image_large,
+              image_medium: image_medium || image_large || image_small,
+              image_large: image_large || image_medium || image_small
+            }
           }
         }
       }
@@ -292,13 +303,27 @@ export const handleSpotifyPlayerState = (player_state: any) => {
       state.currentTrackUri = player_state.track?.uri || undefined
       if (
         player_state.track?.uri &&
-        player_state.track?.metadata?.image_url?.includes('spotify:image:')
+        (player_state.track?.metadata?.image_small_url?.includes('spotify:image:') ||
+          player_state.track?.metadata?.image_url?.includes('spotify:image:') ||
+          player_state.track?.metadata?.image_large_url?.includes('spotify:image:'))
       ) {
-        state.imageUriUrlMap[player_state.track.uri] =
-          player_state.track.metadata.image_url.replace(
-            'spotify:image:',
-            'https://i.scdn.co/image/'
-          )
+        const image_small = player_state.track.metadata.image_small_url.replace(
+          'spotify:image:',
+          'https://i.scdn.co/image/'
+        )
+        const image_medium = player_state.track.metadata.image_url.replace(
+          'spotify:image:',
+          'https://i.scdn.co/image/'
+        )
+        const image_large = player_state.track.metadata.image_large_url.replace(
+          'spotify:image:',
+          'https://i.scdn.co/image/'
+        )
+        state.imageUriUrlMap[player_state.track.uri] = {
+          image_small: image_small || image_medium || image_large,
+          image_medium: image_medium || image_large || image_small,
+          image_large: image_large || image_medium || image_small
+        }
       }
     })
   )
