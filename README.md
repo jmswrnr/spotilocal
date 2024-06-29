@@ -17,6 +17,9 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 - **Empty content files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
 - **Save JSON file** - Save player state to JSON file.
 
+> [!NOTE]  
+> The JSON state file will never be emptied on pause, because it contains the `isPlaying` boolean.
+
 ## Future feature ideas:
 
 - Custom templating for text files
