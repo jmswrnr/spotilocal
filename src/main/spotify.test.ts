@@ -293,7 +293,12 @@ test('Handle Spotify player state update', async () => {
     position_as_of_timestamp: '1337',
     duration: '2000',
     track: {
-      uri: 'spotify:track:1337'
+      uri: 'spotify:track:1337',
+      metadata: {
+        image_small_url: 'spotify:image:small',
+        image_url: 'spotify:image:medium',
+        image_large_url: 'spotify:image:large'
+      }
     }
   })
   const playingState = applicationStore.getState()
@@ -302,6 +307,15 @@ test('Handle Spotify player state update', async () => {
   expect(playingState.durationMs).toBe(2000)
   expect(playingState.lastUpdatedAt).toBe(1719432114603)
   expect(playingState.currentTrackUri).toBe('spotify:track:1337')
+  expect(playingState.imageUriUrlMap).toMatchInlineSnapshot(`
+    {
+      "spotify:track:1337": {
+        "image_large": "https://i.scdn.co/image/large",
+        "image_medium": "https://i.scdn.co/image/medium",
+        "image_small": "https://i.scdn.co/image/small",
+      },
+    }
+  `)
   handleSpotifyPlayerState({
     timestamp: '1719432114604',
     is_paused: true,
