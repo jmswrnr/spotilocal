@@ -40,7 +40,7 @@ const saveCurrentImage = async (
 ) => {
   const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
 
-  if(!shouldbeEmpty && album?.image) {
+  if (!shouldbeEmpty && album?.image) {
     if (savedImageUrl !== album.image) {
       applicationStore.setState({
         savedImageUrl: album.image
@@ -92,8 +92,8 @@ const saveCurrentTrack = (
       fs.writeFile(txtURI, track.uri)
     }
     return
-  } 
-  
+  }
+
   if (savedTrackUri !== undefined) {
     applicationStore.setState({
       savedTrackUri: undefined
@@ -111,7 +111,13 @@ applicationStore.subscribe(
     currentTrack: state.currentTrack,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentTrack(slice.isPlaying, slice.savedTrackUri, slice.currentTrack, slice.emptyFilesWhenPaused)
+  (slice) =>
+    saveCurrentTrack(
+      slice.isPlaying,
+      slice.savedTrackUri,
+      slice.currentTrack,
+      slice.emptyFilesWhenPaused
+    )
 )
 
 const saveCurrentAlbum = (
@@ -130,8 +136,8 @@ const saveCurrentAlbum = (
       fs.writeFile(txtAlbum, album.name)
     }
     return
-  } 
-  
+  }
+
   if (savedAlbumUri !== undefined) {
     applicationStore.setState({
       savedAlbumUri: undefined
@@ -252,6 +258,7 @@ export const handleSpotifyPlayerState = (player_state: any) => {
   applicationStore.setState(
     produce<ApplicationState>((state) => {
       state.lastUpdatedAt = parseInt(player_state.timestamp) || 0
+      state.durationMs = parseInt(player_state.duration) || 0
       state.isPlaying = !player_state.is_paused
       state.positionMs = parseInt(player_state.position_as_of_timestamp) || 0
       state.currentTrackUri = player_state.track?.uri || undefined

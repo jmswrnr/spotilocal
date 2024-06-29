@@ -132,7 +132,8 @@ describe('User settings', async () => {
         handleSpotifyPlayerState({
           timestamp: '1719432114603',
           is_paused: true,
-          position_as_of_timestamp: 1337,
+          position_as_of_timestamp: '1337',
+          duration: '2000',
           track: {
             uri: 'spotify:track:1337'
           }
@@ -155,6 +156,7 @@ describe('User settings', async () => {
           timestamp: '1719432114603',
           is_paused: false,
           position_as_of_timestamp: 1337,
+          duration: 2000,
           track: {
             uri: 'spotify:track:1337'
           }
@@ -182,7 +184,7 @@ describe('User settings', async () => {
         handleSpotifyPlayerState({
           timestamp: '1719432114603',
           is_paused: false,
-          position_as_of_timestamp: 1337,
+          position_as_of_timestamp: '1337',
           track: {
             uri: 'spotify:track:1337'
           }
@@ -206,7 +208,8 @@ test('Handle Spotify player state update', async () => {
   handleSpotifyPlayerState({
     timestamp: '1719432114603',
     is_paused: false,
-    position_as_of_timestamp: 1337,
+    position_as_of_timestamp: '1337',
+    duration: '2000',
     track: {
       uri: 'spotify:track:1337'
     }
@@ -214,12 +217,14 @@ test('Handle Spotify player state update', async () => {
   const playingState = applicationStore.getState()
   expect(playingState.isPlaying).toBe(true)
   expect(playingState.positionMs).toBe(1337)
+  expect(playingState.durationMs).toBe(2000)
   expect(playingState.lastUpdatedAt).toBe(1719432114603)
   expect(playingState.currentTrackUri).toBe('spotify:track:1337')
   handleSpotifyPlayerState({
     timestamp: '1719432114604',
     is_paused: true,
-    position_as_of_timestamp: 0
+    position_as_of_timestamp: '0',
+    duration: '0'
   })
   const pausedState = applicationStore.getState()
   expect(pausedState.isPlaying).toBe(false)
@@ -239,7 +244,8 @@ describe('Handle Spotify track data', async () => {
     handleSpotifyPlayerState({
       timestamp: '1719432114603',
       is_paused: false,
-      position_as_of_timestamp: 1337,
+      position_as_of_timestamp: '1337',
+      duration: '2000',
       track: {
         uri: 'spotify:track:1337'
       }

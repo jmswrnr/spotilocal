@@ -26,6 +26,7 @@ export interface RemoteApplicationState {
   isLoggedIn: boolean | null
   isPlaying: boolean
   positionMs: number
+  durationMs: number
   lastUpdatedAt?: number
   currentTrack?: Track
   currentAlbum?: ResolvedAlbum
