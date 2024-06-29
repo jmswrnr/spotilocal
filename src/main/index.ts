@@ -50,7 +50,7 @@ const positionWindowToTray = async (window: BrowserWindow, animate: boolean = fa
       middleware: [autoPlacement()]
     }
   )
-  window.setPosition(position.x, position.y, animate)
+  window.setPosition(Math.floor(position.x), Math.floor(position.y), animate)
 }
 
 const toggleSettingsWindow = async () => {
