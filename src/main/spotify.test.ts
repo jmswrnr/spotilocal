@@ -347,9 +347,6 @@ describe('Handle Spotify track data', async () => {
       }
     })
     await expected1337TrackFileWrites()
-
-    const newState = applicationStore.getState()
-    expect(newState.savedTrackUri).toBe('spotify:track:1337')
     expect(fs.writeFile).toBeCalledTimes(6)
 
     vi.resetAllMocks()

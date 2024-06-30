@@ -22,14 +22,20 @@ import {
 } from '@shared/types/state'
 import { shallow } from 'zustand/shallow'
 
+let savedImageUrl: string | undefined
+let savedTrackUri: string | undefined
+let savedAlbumUri: string | undefined
+
 const writeTrackImageToDisk = async (imageUrl: string) => {
+  savedImageUrl = imageUrl
   const imagedata = await fetchImageFromRenderer(imageUrl)
-  if (imageUrl === applicationStore.getState().savedImageUrl) {
+  if (savedImageUrl === imageUrl) {
     fs.writeFile(imgOutput, imagedata)
   }
 }
 
 const writeBlankImageToDisk = async () => {
+  savedImageUrl = undefined
   fs.writeFile(imgOutput, transparent1px)
 }
 
@@ -43,7 +49,6 @@ const writeBlankTextToDisk = async () => {
 
 const saveCurrentImage = async (
   isPlaying: boolean,
-  savedImageUrl: string | undefined,
   album: ResolvedAlbum | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
@@ -51,41 +56,27 @@ const saveCurrentImage = async (
 
   if (!shouldbeEmpty && album?.image_medium) {
     if (savedImageUrl !== album.image_medium) {
-      applicationStore.setState({
-        savedImageUrl: album.image_medium
-      })
       await writeTrackImageToDisk(album.image_medium)
     }
     return
   }
 
   if (savedImageUrl !== undefined) {
-    applicationStore.setState({
-      savedImageUrl: undefined
-    })
     await writeBlankImageToDisk()
   }
 }
 applicationStore.subscribe(
   (state) => ({
     isPlaying: state.isPlaying,
-    savedImageUrl: state.savedImageUrl,
     currentAlbum: state.currentAlbum,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) =>
-    saveCurrentImage(
-      slice.isPlaying,
-      slice.savedImageUrl,
-      slice.currentAlbum,
-      slice.emptyFilesWhenPaused
-    ),
+  (slice) => saveCurrentImage(slice.isPlaying, slice.currentAlbum, slice.emptyFilesWhenPaused),
   { equalityFn: shallow }
 )
 
 const saveCurrentTrack = (
   isPlaying: boolean,
-  savedTrackUri: string | undefined,
   track: ResolvedTrack | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
@@ -93,9 +84,7 @@ const saveCurrentTrack = (
 
   if (!shouldbeEmpty && track) {
     if (savedTrackUri !== track.uri) {
-      applicationStore.setState({
-        savedTrackUri: track.uri
-      })
+      savedTrackUri = track.uri
       fs.writeFile(
         txtMain,
         `${track.name} - ${track.artists.map((artist) => artist.name).join(', ')}`
@@ -108,9 +97,7 @@ const saveCurrentTrack = (
   }
 
   if (savedTrackUri !== undefined) {
-    applicationStore.setState({
-      savedTrackUri: undefined
-    })
+    savedTrackUri = undefined
     fs.writeFile(txtMain, '')
     fs.writeFile(txtArtist, '')
     fs.writeFile(txtTrack, '')
@@ -120,23 +107,15 @@ const saveCurrentTrack = (
 applicationStore.subscribe(
   (state) => ({
     isPlaying: state.isPlaying,
-    savedTrackUri: state.savedTrackUri,
     currentTrack: state.currentTrack,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) =>
-    saveCurrentTrack(
-      slice.isPlaying,
-      slice.savedTrackUri,
-      slice.currentTrack,
-      slice.emptyFilesWhenPaused
-    ),
+  (slice) => saveCurrentTrack(slice.isPlaying, slice.currentTrack, slice.emptyFilesWhenPaused),
   { equalityFn: shallow }
 )
 
 const saveCurrentAlbum = (
   isPlaying: boolean,
-  savedAlbumUri: string | undefined,
   album: ResolvedAlbum | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
@@ -144,35 +123,24 @@ const saveCurrentAlbum = (
 
   if (!shouldbeEmpty && album) {
     if (savedAlbumUri !== album.uri) {
-      applicationStore.setState({
-        savedAlbumUri: album.uri
-      })
+      savedAlbumUri = album.uri
       fs.writeFile(txtAlbum, album.name)
     }
     return
   }
 
   if (savedAlbumUri !== undefined) {
-    applicationStore.setState({
-      savedAlbumUri: undefined
-    })
+    savedAlbumUri = undefined
     fs.writeFile(txtAlbum, '')
   }
 }
 applicationStore.subscribe(
   (state) => ({
     isPlaying: state.isPlaying,
-    savedAlbumUri: state.savedAlbumUri,
     currentAlbum: state.currentAlbum,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) =>
-    saveCurrentAlbum(
-      slice.isPlaying,
-      slice.savedAlbumUri,
-      slice.currentAlbum,
-      slice.emptyFilesWhenPaused
-    ),
+  (slice) => saveCurrentAlbum(slice.isPlaying, slice.currentAlbum, slice.emptyFilesWhenPaused),
   { equalityFn: shallow }
 )
 

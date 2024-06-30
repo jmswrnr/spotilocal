@@ -51,7 +51,4 @@ export interface ApplicationState extends RemoteApplicationState {
   trackMap: Record<string, Track | undefined>
   albumMap: Record<string, Album | undefined>
   imageUriUrlMap: Record<string, Images>
-  savedTrackUri?: string
-  savedAlbumUri?: string
-  savedImageUrl?: string
 }
