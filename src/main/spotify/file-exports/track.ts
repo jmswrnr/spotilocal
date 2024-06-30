@@ -1,7 +1,7 @@
 import { ResolvedTrack } from '@shared/types/state'
 import fs from 'node:fs/promises'
-import { txtArtist, txtMain, txtTrack, txtURI } from '../constants'
-import { applicationStore } from '../state'
+import { txtArtist, txtMain, txtTrack, txtURI } from '../../constants'
+import { applicationStore } from '../../state'
 import { shallow } from 'zustand/shallow'
 
 let savedTrackUri: string | undefined

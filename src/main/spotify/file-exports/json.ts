@@ -1,7 +1,7 @@
 import { UserExposedState } from '@shared/types/state'
 import fs from 'node:fs/promises'
-import { jsonOutput } from '../constants'
-import { applicationStore, userStateSlice } from '../state'
+import { jsonOutput } from '../../constants'
+import { applicationStore, userStateSlice } from '../../state'
 import { shallow } from 'zustand/shallow'
 
 const handleUserExposedStateSliceUpdate = (slice: UserExposedState, saveJsonFile: boolean) => {

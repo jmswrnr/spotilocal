@@ -1,9 +1,9 @@
 import { ResolvedAlbum } from '@shared/types/state'
 import fs from 'node:fs/promises'
-import { imgOutput, transparent1px } from '../constants'
-import { applicationStore } from '../state'
+import { imgOutput, transparent1px } from '../../constants'
+import { applicationStore } from '../../state'
 import { shallow } from 'zustand/shallow'
-import { fetchImageFromRenderer } from '..'
+import { fetchImageFromRenderer } from '../..'
 
 let savedImageUrl: string | undefined
 
