@@ -39,12 +39,30 @@ const writeBlankImageToDisk = async () => {
   fs.writeFile(imgOutput, transparent1px)
 }
 
-const writeBlankTextToDisk = async () => {
+const writeTrackToDisk = async (track: ResolvedTrack) => {
+  savedTrackUri = track.uri
+  fs.writeFile(txtMain, `${track.name} - ${track.artists.map((artist) => artist.name).join(', ')}`)
+  fs.writeFile(txtArtist, track.artists.map((artist) => artist.name).join(', '))
+  fs.writeFile(txtTrack, track.name)
+  fs.writeFile(txtURI, track.uri)
+}
+
+const writeBlankTrackToDisk = async () => {
+  savedTrackUri = undefined
   fs.writeFile(txtTrack, '')
   fs.writeFile(txtURI, '')
   fs.writeFile(txtArtist, '')
-  fs.writeFile(txtAlbum, '')
   fs.writeFile(txtMain, '')
+}
+
+const writeAlbumToDisk = async (album: ResolvedAlbum) => {
+  savedAlbumUri = album.uri
+  fs.writeFile(txtAlbum, album.name)
+}
+
+const writeBlankAlbumToDisk = async () => {
+  savedAlbumUri = undefined
+  fs.writeFile(txtAlbum, '')
 }
 
 const saveCurrentImage = async (
@@ -84,24 +102,13 @@ const saveCurrentTrack = (
 
   if (!shouldbeEmpty && track) {
     if (savedTrackUri !== track.uri) {
-      savedTrackUri = track.uri
-      fs.writeFile(
-        txtMain,
-        `${track.name} - ${track.artists.map((artist) => artist.name).join(', ')}`
-      )
-      fs.writeFile(txtArtist, track.artists.map((artist) => artist.name).join(', '))
-      fs.writeFile(txtTrack, track.name)
-      fs.writeFile(txtURI, track.uri)
+      writeTrackToDisk(track)
     }
     return
   }
 
   if (savedTrackUri !== undefined) {
-    savedTrackUri = undefined
-    fs.writeFile(txtMain, '')
-    fs.writeFile(txtArtist, '')
-    fs.writeFile(txtTrack, '')
-    fs.writeFile(txtURI, '')
+    writeBlankTrackToDisk()
   }
 }
 applicationStore.subscribe(
@@ -123,15 +130,13 @@ const saveCurrentAlbum = (
 
   if (!shouldbeEmpty && album) {
     if (savedAlbumUri !== album.uri) {
-      savedAlbumUri = album.uri
-      fs.writeFile(txtAlbum, album.name)
+      writeAlbumToDisk(album)
     }
     return
   }
 
   if (savedAlbumUri !== undefined) {
-    savedAlbumUri = undefined
-    fs.writeFile(txtAlbum, '')
+    writeBlankAlbumToDisk()
   }
 }
 applicationStore.subscribe(
@@ -206,7 +211,8 @@ applicationStore.subscribe(
 )
 
 writeBlankImageToDisk()
-writeBlankTextToDisk()
+writeBlankTrackToDisk()
+writeBlankAlbumToDisk()
 
 export const handleSpotifyTrackData = (tracks: any[]) => {
   if (!tracks || !Array.isArray(tracks)) {
