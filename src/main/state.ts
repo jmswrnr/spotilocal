@@ -6,6 +6,7 @@ import type {
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { settingsDiskStore } from './disk-storage'
+import { shallow } from 'zustand/shallow'
 
 export const userStateSlice = (state: RemoteApplicationState): UserExposedState => ({
   isPlaying: state.isPlaying,
@@ -45,5 +46,6 @@ applicationStore.subscribe(
   (state) => state.userSettings,
   (userSettings) => {
     settingsDiskStore.store = userSettings
-  }
+  },
+  { equalityFn: shallow }
 )

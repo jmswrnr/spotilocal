@@ -20,6 +20,7 @@ import {
   Track,
   UserExposedState
 } from '@shared/types/state'
+import { shallow } from 'zustand/shallow'
 
 const writeTrackImageToDisk = async (imageUrl: string) => {
   const imagedata = await fetchImageFromRenderer(imageUrl)
@@ -78,7 +79,8 @@ applicationStore.subscribe(
       slice.savedImageUrl,
       slice.currentAlbum,
       slice.emptyFilesWhenPaused
-    )
+    ),
+  { equalityFn: shallow }
 )
 
 const saveCurrentTrack = (
@@ -128,7 +130,8 @@ applicationStore.subscribe(
       slice.savedTrackUri,
       slice.currentTrack,
       slice.emptyFilesWhenPaused
-    )
+    ),
+  { equalityFn: shallow }
 )
 
 const saveCurrentAlbum = (
@@ -169,7 +172,8 @@ applicationStore.subscribe(
       slice.savedAlbumUri,
       slice.currentAlbum,
       slice.emptyFilesWhenPaused
-    )
+    ),
+  { equalityFn: shallow }
 )
 
 const resolveCurrentState = (state: ApplicationState) => {
@@ -229,7 +233,8 @@ applicationStore.subscribe(
     slice: userStateSlice(state),
     saveJsonFile: state.userSettings.saveJsonFile
   }),
-  (data) => handleRemoteStateSliceUpdate(data.slice, data.saveJsonFile)
+  (data) => handleRemoteStateSliceUpdate(data.slice, data.saveJsonFile),
+  { equalityFn: shallow }
 )
 
 writeBlankImageToDisk()

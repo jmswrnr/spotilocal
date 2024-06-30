@@ -9,6 +9,7 @@ import { autoPlacement, computePosition } from '@floating-ui/core'
 import { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
 import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
+import { shallow } from 'zustand/shallow'
 
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
@@ -74,7 +75,9 @@ const sendStateToRenderer = (slice: RemoteApplicationState) => {
   settingsWindow.webContents.send('state-update', slice)
 }
 
-applicationStore.subscribe(remoteStateSlice, (slice) => sendStateToRenderer(slice))
+applicationStore.subscribe(remoteStateSlice, (slice) => sendStateToRenderer(slice), {
+  equalityFn: shallow
+})
 
 app.whenReady().then(async () => {
   try {
