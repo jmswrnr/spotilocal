@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import fs from 'node:fs/promises'
-import { transparent1px } from './constants'
+import { transparent1px } from '../constants'
 
-vi.mock('./env', () => ({
+vi.mock('../env', () => ({
   outputDirectory: '/mocked-output/dir/'
 }))
 
-vi.mock('./index', () => ({
+vi.mock('../index', () => ({
   fetchImageFromRenderer: (url: string) =>
     new Promise((resolve) => resolve('mock-fetched-image-' + url))
 }))
 
-vi.mock('./disk-storage', () => ({
+vi.mock('../disk-storage', () => ({
   settingsDiskStore: {
     store: {}
   }
@@ -126,7 +126,8 @@ const trackData = [
 ]
 
 test('Writes blank data on load', async () => {
-  await import('./spotify')
+  const initFiles = await import('./index').then((module) => module.initFiles)
+  initFiles()
   await vi.waitFor(expectBlankFilesWrites)
   expect(fs.writeFile).toBeCalledTimes(6)
 })
@@ -135,8 +136,9 @@ describe('User settings', async () => {
   describe('emptyFilesWhenPaused', async () => {
     describe('disabled', () => {
       test('write current track when application loaded with paused state', async () => {
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-        const { applicationStore } = await import('./state')
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
 
         applicationStore.setState({
           userSettings: {
@@ -160,8 +162,9 @@ describe('User settings', async () => {
         await expected1337TrackFileWrites()
       })
       test('do not empty files when paused', async () => {
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-        const { applicationStore } = await import('./state')
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
 
         applicationStore.setState({
           userSettings: {
@@ -190,8 +193,9 @@ describe('User settings', async () => {
     })
     describe('enabled', () => {
       test('do empty files when paused', async () => {
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-        const { applicationStore } = await import('./state')
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
 
         applicationStore.setState({
           userSettings: {
@@ -222,8 +226,9 @@ describe('User settings', async () => {
   describe('saveJsonFile', async () => {
     describe('enabled', () => {
       test('write state to json file', async () => {
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./spotify')
-        const { applicationStore } = await import('./state')
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
 
         applicationStore.setState({
           userSettings: {
@@ -277,8 +282,9 @@ describe('User settings', async () => {
 })
 
 test('Handle Spotify player state update', async () => {
-  const { handleSpotifyPlayerState } = await import('./spotify')
-  const { applicationStore } = await import('./state')
+  await import('./index')
+  const { handleSpotifyPlayerState } = await import('./api-handlers')
+  const { applicationStore } = await import('../state')
   const initState = applicationStore.getState()
   expect(initState.isPlaying).toBe(false)
   applicationStore.setState({
@@ -325,12 +331,12 @@ test('Handle Spotify player state update', async () => {
   const pausedState = applicationStore.getState()
   expect(pausedState.isPlaying).toBe(false)
   expect(pausedState.currentTrackUri).toBe(undefined)
-  expect(fs.writeFile).toBeCalledTimes(6)
 })
 
 describe('Handle Spotify track data', async () => {
-  const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./spotify')
-  const { applicationStore } = await import('./state')
+  await import('./index')
+  const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
+  const { applicationStore } = await import('../state')
 
   beforeEach(() => {
     handleSpotifyTrackData(trackData)

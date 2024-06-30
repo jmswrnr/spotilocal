@@ -1,7 +1,7 @@
 import electron, { app, BrowserWindow, ipcMain, components, Tray, shell, dialog } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon-16.png?asset'
-import { handleSpotifyPlayerState, handleSpotifyTrackData } from './spotify'
+import { handleSpotifyPlayerState, handleSpotifyTrackData } from './spotify/api-handlers'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { applicationStore, remoteStateSlice } from './state'
 import { isUpdateAvailable as getIsUpdateAvailable } from './update-check'
@@ -10,6 +10,8 @@ import { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/
 import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
 import { shallow } from 'zustand/shallow'
+import './spotify'
+import { initFiles } from './spotify'
 
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
@@ -80,6 +82,11 @@ applicationStore.subscribe(remoteStateSlice, (slice) => sendStateToRenderer(slic
 })
 
 app.whenReady().then(async () => {
+  try {
+    initFiles()
+  } catch {
+    dialog.showErrorBox('Spotilocal Initialization Error', 'Error creating output files')
+  }
   try {
     await components.whenReady([components.WIDEVINE_CDM_ID])
   } catch {
