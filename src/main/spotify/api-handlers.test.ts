@@ -1,7 +1,7 @@
 import { spotiTest } from '../test/custom-test'
 
 import fs from 'node:fs/promises'
-import { beforeEach, describe, expect,  test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS } from '../constants'
 
 beforeEach(() => {
@@ -63,25 +63,34 @@ test('Handle Spotify player state update', async () => {
 })
 
 describe('Handle Spotify track data', async () => {
-  spotiTest('Writes files', async ({ trackData, expected1337TrackFileWrites,expectBlankTextFilesWrites, state1337TrackPlaying, state1337TrackPaused }) => {
-    await import('./index')
-    const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
-    const { applicationStore } = await import('../state')
-    handleSpotifyTrackData(trackData)
-    applicationStore.setState({
-      userSettings: DEFAULT_USER_SETTINGS
-    })
-    
-    vi.resetAllMocks()
-    handleSpotifyPlayerState(state1337TrackPlaying)
-    await expected1337TrackFileWrites()
-    expect(fs.writeFile).toBeCalledTimes(6)
+  spotiTest(
+    'Writes files',
+    async ({
+      trackData,
+      expected1337TrackFileWrites,
+      expectBlankTextFilesWrites,
+      state1337TrackPlaying,
+      state1337TrackPaused
+    }) => {
+      await import('./index')
+      const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
+      const { applicationStore } = await import('../state')
+      handleSpotifyTrackData(trackData)
+      applicationStore.setState({
+        userSettings: DEFAULT_USER_SETTINGS
+      })
 
-    vi.resetAllMocks()
-    handleSpotifyPlayerState(state1337TrackPaused)
-    await expectBlankTextFilesWrites()
-    expect(fs.writeFile).toBeCalledTimes(6)
-  })
+      vi.resetAllMocks()
+      handleSpotifyPlayerState(state1337TrackPlaying)
+      await expected1337TrackFileWrites()
+      expect(fs.writeFile).toBeCalledTimes(6)
+
+      vi.resetAllMocks()
+      handleSpotifyPlayerState(state1337TrackPaused)
+      await expectBlankTextFilesWrites()
+      expect(fs.writeFile).toBeCalledTimes(6)
+    }
+  )
 
   spotiTest('Updates state', async ({ trackData }) => {
     await import('./index')
