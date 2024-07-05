@@ -28,10 +28,13 @@ body {
 }
 
 body {
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: var(--font-size);
   color: var(--foreground-color);
   width: 240px;
+}
+
+* {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .settings {
@@ -52,18 +55,33 @@ body {
 }
 
 .section-area {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   background-color: var(--background-color);
   border-radius: var(--border-radius);
   padding: calc(var(--window-border-size) * 2);
+  overflow: hidden;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.03;
+  filter: blur(8px);
+  pointer-events: none;
 }
 
 .cover {
   border-radius: var(--border-radius);
 }
 
+.label,
 .button {
   display: flex;
   align-items: center;
@@ -96,8 +114,14 @@ body {
   vertical-align: text-bottom;
 }
 
+.icon img {
+  width: 15px;
+  vertical-align: text-bottom;
+  border-radius: 2px;
+}
+
 .button:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .button:not(:disabled) {
@@ -111,6 +135,15 @@ body {
 .button:focus-visible {
   outline: 1px solid var(--foreground-color);
   z-index: 1;
+}
+
+.button .text {
+  flex: 1;
+}
+
+.label .text,
+.button .right {
+  opacity: 0.6;
 }
 
 .hr {

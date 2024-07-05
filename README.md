@@ -15,6 +15,7 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 ## Settings
 
 - **Empty content files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
+- **Small / Medium / Large Cover Art Image** - Specify which resolutions of the cover art image you want to save.
 - **Save JSON file** - Save player state to JSON file.
 
 > [!NOTE]  
@@ -23,7 +24,6 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 ## Future feature ideas:
 
 - Custom templating for text files
-- Specify which image resolutions you want to save, if any
 - Custom output directory?
 - Previous / Next tracks
 - Display track information in settings menu?

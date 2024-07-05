@@ -29,6 +29,9 @@ export type ResolvedAlbum = Album & Partial<Images>
 export type UserSettings = {
   emptyFilesWhenPaused: boolean
   saveJsonFile: boolean
+  saveSmallImage: boolean
+  saveMediumImage: boolean
+  saveLargeImage: boolean
 }
 
 export interface UserExposedState {

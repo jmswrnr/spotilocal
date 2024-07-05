@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import fs from 'node:fs/promises'
-import { transparent1px } from '../constants'
+import { transparent1px, DEFAULT_USER_SETTINGS } from '../constants'
 
 vi.mock('../env', () => ({
   outputDirectory: '/mocked-output/dir/'
@@ -19,7 +19,8 @@ vi.mock('../disk-storage', () => ({
 
 vi.mock('node:fs/promises', () => ({
   default: {
-    writeFile: vi.fn()
+    writeFile: vi.fn(),
+    unlink: vi.fn()
   }
 }))
 
@@ -28,13 +29,12 @@ beforeEach(() => {
   vi.resetModules()
 })
 
-const expectBlankFilesWrites = async () => {
+const expectBlankTextFilesWrites = async () => {
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_URI.txt', '')
-  expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.png', transparent1px)
 }
 
 const expected1337TrackFileWrites = async () => {
@@ -49,12 +49,6 @@ const expected1337TrackFileWrites = async () => {
     '\\mocked-output\\dir\\Spotilocal_URI.txt',
     'spotify:track:1337'
   )
-  await vi.waitFor(() => {
-    expect(fs.writeFile).toBeCalledWith(
-      '\\mocked-output\\dir\\Spotilocal.png',
-      'mock-fetched-image-https://1337-300-test-image.png'
-    )
-  })
 }
 
 const trackData = [
@@ -125,14 +119,323 @@ const trackData = [
   }
 ]
 
-test('Writes blank data on load', async () => {
-  const initFiles = await import('./index').then((module) => module.initFiles)
-  initFiles()
-  await vi.waitFor(expectBlankFilesWrites)
-  expect(fs.writeFile).toBeCalledTimes(6)
+const state1337TrackPaused = {
+  timestamp: '1719432114603',
+  is_paused: true,
+  position_as_of_timestamp: '1337',
+  duration: '2000',
+  track: {
+    uri: 'spotify:track:1337'
+  }
+}
+
+const state1337TrackPlaying = {
+  timestamp: '1719432114603',
+  is_paused: false,
+  position_as_of_timestamp: 1337,
+  duration: 2000,
+  track: {
+    uri: 'spotify:track:1337'
+  }
+}
+
+
+describe('Initializes files', () => {
+  test('Writes blank data on load', async () => {
+    const initFiles = await import('./index').then((module) => module.initFiles)
+    initFiles()
+    await vi.waitFor(expectBlankTextFilesWrites)
+    expect(fs.writeFile).toBeCalledTimes(6)
+  })
+
+  test('Deletes legacy image', async () => {
+    const initFiles = await import('./index').then((module) => module.initFiles)
+    initFiles()
+    await Promise.all([
+      vi.waitFor(() => {
+        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.png')
+      })
+    ])
+  })
+
+  test('Deletes unused images', async () => {
+    const initFiles = await import('./index').then((module) => module.initFiles)
+    const { applicationStore } = await import('../state')
+    applicationStore.setState({
+      userSettings: {
+        ...DEFAULT_USER_SETTINGS,
+        emptyFilesWhenPaused: false,
+        saveSmallImage: false,
+        saveMediumImage: false,
+        saveLargeImage: false
+      }
+    })
+    vi.resetAllMocks()
+    initFiles()
+    await Promise.all([
+      vi.waitFor(() => {
+        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Small.png')
+      }),
+      vi.waitFor(() => {
+        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Medium.png')
+      }),
+      vi.waitFor(() => {
+        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Large.png')
+      })
+    ])
+  })
+
+  test('Empties used images', async () => {
+    const initFiles = await import('./index').then((module) => module.initFiles)
+    const { applicationStore } = await import('../state')
+    applicationStore.setState({
+      userSettings: {
+        ...DEFAULT_USER_SETTINGS,
+        emptyFilesWhenPaused: false,
+        saveSmallImage: true,
+        saveMediumImage: true,
+        saveLargeImage: true
+      }
+    })
+    vi.resetAllMocks()
+    initFiles()
+    await Promise.all([
+      vi.waitFor(() => {
+        expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Small.png', transparent1px)
+      }),
+      vi.waitFor(() => {
+        expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Medium.png', transparent1px)
+      }),
+      vi.waitFor(() => {
+        expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Large.png', transparent1px)
+      })
+    ])
+  })
 })
 
 describe('User settings', async () => {
+  describe('Cover Art Sizes', async () => {
+    describe('Handle changing settings', () => {
+      test('Deletes unused images', async () => {
+        const { applicationStore } = await import('../state')
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: false,
+            saveSmallImage: true,
+            saveMediumImage: true,
+            saveLargeImage: true
+          }
+        })
+        const initFiles = await import('./index').then((module) => module.initFiles)
+        initFiles()
+        vi.resetAllMocks()
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: false,
+            saveSmallImage: false,
+            saveMediumImage: false,
+            saveLargeImage: false
+          }
+        })
+        await Promise.all([
+          vi.waitFor(() => {
+            expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Small.png')
+          }),
+          vi.waitFor(() => {
+            expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Medium.png')
+          }),
+          vi.waitFor(() => {
+            expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Large.png')
+          })
+        ])
+      })
+      
+      test('Empties used images', async () => {
+        const { applicationStore } = await import('../state')
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: false,
+            saveSmallImage: false,
+            saveMediumImage: false,
+            saveLargeImage: false
+          }
+        })
+        await import('./index')
+        vi.resetAllMocks()
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: false,
+            saveSmallImage: true,
+            saveMediumImage: true,
+            saveLargeImage: true
+          }
+        })
+        await Promise.all([
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Small.png', transparent1px)
+          }),
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Medium.png', transparent1px)
+          }),
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Large.png', transparent1px)
+          })
+        ])
+      })
+    })
+    describe('when using emptyFilesWhenPaused', () => {
+      test('updates correct files when play state changes', async () => {
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: true,
+            saveSmallImage: false,
+            saveMediumImage: false,
+            saveLargeImage: true
+          }
+        })
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState(state1337TrackPlaying)
+        await Promise.all([
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith(
+              '\\mocked-output\\dir\\Spotilocal_Large.png',
+              'mock-fetched-image-https://1337-640-test-image.png'
+            )
+          })
+        ])
+        handleSpotifyPlayerState(state1337TrackPaused)
+        await Promise.all([
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith(
+              '\\mocked-output\\dir\\Spotilocal_Large.png',
+              transparent1px
+            )
+          })
+        ])
+      })
+    })
+    describe('All Enabled', async () => {
+      test('saves all 3 images', async () => {
+        await import('./index')
+        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { applicationStore } = await import('../state')
+        applicationStore.setState({
+          userSettings: {
+            ...DEFAULT_USER_SETTINGS,
+            emptyFilesWhenPaused: false,
+            saveSmallImage: true,
+            saveMediumImage: true,
+            saveLargeImage: true
+          }
+        })
+        handleSpotifyTrackData(trackData)
+        handleSpotifyPlayerState(state1337TrackPlaying)
+        await Promise.all([
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith(
+              '\\mocked-output\\dir\\Spotilocal_Small.png',
+              'mock-fetched-image-https://1337-64-test-image.png'
+            )
+          }),
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith(
+              '\\mocked-output\\dir\\Spotilocal_Medium.png',
+              'mock-fetched-image-https://1337-300-test-image.png'
+            )
+          }),
+          vi.waitFor(() => {
+            expect(fs.writeFile).toBeCalledWith(
+              '\\mocked-output\\dir\\Spotilocal_Large.png',
+              'mock-fetched-image-https://1337-640-test-image.png'
+            )
+          })
+        ])
+      })
+    })
+    test('saveSmallImage Only', async () => {
+      await import('./index')
+      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+      const { applicationStore } = await import('../state')
+      applicationStore.setState({
+        userSettings: {
+          ...DEFAULT_USER_SETTINGS,
+          emptyFilesWhenPaused: false,
+          saveSmallImage: true,
+          saveMediumImage: false,
+          saveLargeImage: false
+        }
+      })
+      vi.resetAllMocks()
+      handleSpotifyTrackData(trackData)
+      handleSpotifyPlayerState(state1337TrackPlaying)
+      await Promise.all([
+        vi.waitFor(() => {
+          expect(fs.writeFile).toBeCalledWith(
+            '\\mocked-output\\dir\\Spotilocal_Small.png',
+            'mock-fetched-image-https://1337-64-test-image.png'
+          )
+        })
+      ])
+    })
+    test('saveMediumImage Only', async () => {
+      await import('./index')
+      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+      const { applicationStore } = await import('../state')
+      applicationStore.setState({
+        userSettings: {
+          ...DEFAULT_USER_SETTINGS,
+          emptyFilesWhenPaused: false,
+          saveSmallImage: false,
+          saveMediumImage: true,
+          saveLargeImage: false
+        }
+      })
+      vi.resetAllMocks()
+      handleSpotifyTrackData(trackData)
+      handleSpotifyPlayerState(state1337TrackPlaying)
+      await Promise.all([
+        vi.waitFor(() => {
+          expect(fs.writeFile).toBeCalledWith(
+            '\\mocked-output\\dir\\Spotilocal_Medium.png',
+            'mock-fetched-image-https://1337-300-test-image.png'
+          )
+        })
+      ])
+    })
+    test('saveLargeImage Only', async () => {
+      await import('./index')
+      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+      const { applicationStore } = await import('../state')
+      applicationStore.setState({
+        userSettings: {
+          ...DEFAULT_USER_SETTINGS,
+          emptyFilesWhenPaused: false,
+          saveSmallImage: false,
+          saveMediumImage: false,
+          saveLargeImage: true
+        }
+      })
+      vi.resetAllMocks()
+      handleSpotifyTrackData(trackData)
+      handleSpotifyPlayerState(state1337TrackPlaying)
+      await Promise.all([
+        vi.waitFor(() => {
+          expect(fs.writeFile).toBeCalledWith(
+            '\\mocked-output\\dir\\Spotilocal_Large.png',
+            'mock-fetched-image-https://1337-640-test-image.png'
+          )
+        })
+      ])
+    })
+  })
   describe('emptyFilesWhenPaused', async () => {
     describe('disabled', () => {
       test('write current track when application loaded with paused state', async () => {
@@ -142,6 +445,7 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
+            ...DEFAULT_USER_SETTINGS,
             emptyFilesWhenPaused: false,
             saveJsonFile: false
           }
@@ -149,15 +453,7 @@ describe('User settings', async () => {
 
         vi.resetAllMocks()
         handleSpotifyTrackData(trackData)
-        handleSpotifyPlayerState({
-          timestamp: '1719432114603',
-          is_paused: true,
-          position_as_of_timestamp: '1337',
-          duration: '2000',
-          track: {
-            uri: 'spotify:track:1337'
-          }
-        })
+        handleSpotifyPlayerState(state1337TrackPaused)
 
         await expected1337TrackFileWrites()
       })
@@ -168,21 +464,14 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
+            ...DEFAULT_USER_SETTINGS,
             emptyFilesWhenPaused: false,
             saveJsonFile: false
           }
         })
 
         handleSpotifyTrackData(trackData)
-        handleSpotifyPlayerState({
-          timestamp: '1719432114603',
-          is_paused: false,
-          position_as_of_timestamp: 1337,
-          duration: 2000,
-          track: {
-            uri: 'spotify:track:1337'
-          }
-        })
+        handleSpotifyPlayerState(state1337TrackPlaying)
         vi.resetAllMocks()
         handleSpotifyPlayerState({
           timestamp: '1719432114604',
@@ -199,6 +488,7 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
+            ...DEFAULT_USER_SETTINGS,
             emptyFilesWhenPaused: true,
             saveJsonFile: false
           }
@@ -218,7 +508,7 @@ describe('User settings', async () => {
           timestamp: '1719432114604',
           is_paused: true
         })
-        expectBlankFilesWrites()
+        expectBlankTextFilesWrites()
       })
     })
   })
@@ -232,6 +522,7 @@ describe('User settings', async () => {
 
         applicationStore.setState({
           userSettings: {
+            ...DEFAULT_USER_SETTINGS,
             emptyFilesWhenPaused: false,
             saveJsonFile: true
           }
@@ -289,6 +580,7 @@ test('Handle Spotify player state update', async () => {
   expect(initState.isPlaying).toBe(false)
   applicationStore.setState({
     userSettings: {
+      ...DEFAULT_USER_SETTINGS,
       emptyFilesWhenPaused: false,
       saveJsonFile: false
     }
@@ -334,15 +626,15 @@ test('Handle Spotify player state update', async () => {
 })
 
 describe('Handle Spotify track data', async () => {
-  await import('./index')
-  const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
-  const { applicationStore } = await import('../state')
-
-  beforeEach(() => {
-    handleSpotifyTrackData(trackData)
-  })
-
   it('Writes files', async () => {
+    await import('./index')
+    const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
+    const { applicationStore } = await import('../state')
+    handleSpotifyTrackData(trackData)
+    applicationStore.setState({
+      userSettings: DEFAULT_USER_SETTINGS
+    })
+    vi.resetAllMocks()
     handleSpotifyPlayerState({
       timestamp: '1719432114603',
       is_paused: false,
@@ -361,11 +653,19 @@ describe('Handle Spotify track data', async () => {
       is_paused: true
     })
 
-    expectBlankFilesWrites()
+    expectBlankTextFilesWrites()
     expect(fs.writeFile).toBeCalledTimes(6)
   })
 
-  it('Updates state', () => {
+  it('Updates state', async () => {
+    await import('./index')
+    const { handleSpotifyTrackData } = await import('./api-handlers')
+    const { applicationStore } = await import('../state')
+    handleSpotifyTrackData(trackData)
+    applicationStore.setState({
+      userSettings: DEFAULT_USER_SETTINGS
+    })
+    vi.resetAllMocks()
     const newState = applicationStore.getState()
     expect(newState.trackMap).toMatchInlineSnapshot(`
       {

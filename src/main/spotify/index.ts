@@ -5,12 +5,12 @@ import './file-exports/track'
 import './file-exports/images'
 import './file-exports/json'
 
-import { writeBlankImageToDisk } from './file-exports/images'
+import { initializeDefaultImageFiles } from './file-exports/images'
 import { writeBlankTrackToDisk } from './file-exports/track'
 import { writeBlankAlbumToDisk } from './file-exports/album'
 
 export const initFiles = () => {
-  writeBlankImageToDisk()
+  initializeDefaultImageFiles()
   writeBlankTrackToDisk()
   writeBlankAlbumToDisk()
 }

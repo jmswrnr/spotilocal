@@ -7,6 +7,7 @@ import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { settingsDiskStore } from './disk-storage'
 import { shallow } from 'zustand/shallow'
+import { DEFAULT_USER_SETTINGS } from './constants'
 
 export const userStateSlice = (state: RemoteApplicationState): UserExposedState => ({
   isPlaying: state.isPlaying,
@@ -35,8 +36,7 @@ export const applicationStore = create<ApplicationState>()(
     albumMap: {},
     imageUriUrlMap: {},
     userSettings: {
-      emptyFilesWhenPaused: true,
-      saveJsonFile: false,
+      ...DEFAULT_USER_SETTINGS,
       ...settingsDiskStore.store
     }
   }))
