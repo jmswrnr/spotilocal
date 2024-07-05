@@ -32,11 +32,9 @@ export const App = () => {
     <div className="settings" ref={ref}>
       <div className="section-title">Spotilocal v{__VERSION__}</div>
       <div className="section-area">
-        <img src={image} draggable={false} className='background-image' />
+        {image ? <img src={image} draggable={false} className="background-image" /> : null}
         <div className="label">
-          <div className="icon">
-            <img src={image} draggable={false} />
-          </div>
+          <div className="icon">{image ? <img src={image} draggable={false} /> : null}</div>
           <div className="text">Save Cover Art:</div>
         </div>
         <div className="hr" />
