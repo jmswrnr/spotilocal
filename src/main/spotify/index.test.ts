@@ -1,4 +1,3 @@
-
 import { spotiTest } from '../test/custom-test'
 
 import fs from 'node:fs/promises'

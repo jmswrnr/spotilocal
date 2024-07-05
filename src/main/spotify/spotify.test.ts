@@ -1,7 +1,7 @@
 import { spotiTest } from '../test/custom-test'
 import { beforeEach, describe, expect, vi } from 'vitest'
 import fs from 'node:fs/promises'
-import { transparent1px, DEFAULT_USER_SETTINGS } from '../constants'
+import { DEFAULT_USER_SETTINGS } from '../constants'
 
 beforeEach(() => {
   vi.resetAllMocks()
