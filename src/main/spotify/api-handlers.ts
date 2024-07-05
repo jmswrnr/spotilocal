@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { applicationStore } from '../state'
 import { Album, ApplicationState, Track } from '@shared/types/state'
 
-export const handleSpotifyTrackData = (tracks: any[]) => {
+export const handleSpotifyTrackData = (tracks: any) => {
   if (!tracks || !Array.isArray(tracks)) {
     return
   }
