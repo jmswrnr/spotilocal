@@ -9,7 +9,7 @@ const __PLAYER_URL__ = `https://${__PLAYER_HOSTNAME__}/`
 const __LOGIN_URL__ = `https://accounts.spotify.com/login?continue=${encodeURIComponent(
   __PLAYER_URL__
 )}`
-const __WEBSOCKET_HOSTNAME_PARTIAL__ = 'dealer.spotify.com'
+const __WEBSOCKET_HOSTNAME_PARTIAL__ = 'dealer.*\\.spotify\\.com'
 
 const define = {
   __VERSION__: JSON.stringify(version),

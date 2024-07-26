@@ -27,11 +27,13 @@ ipcRenderer.on('fetch-image', async (event, url) => {
   event.sender.send(`return-fetch-image-${url}`, data)
 })
 
+const wsHostRegExp = RegExp(__WEBSOCKET_HOSTNAME_PARTIAL__, 'i')
+
 if (window.WebSocket.toString().includes('native')) {
   window.WebSocket = class extends WebSocket {
     constructor(url, protocol) {
       super(url, protocol)
-      if (url.includes(__WEBSOCKET_HOSTNAME_PARTIAL__)) {
+      if (wsHostRegExp.test(url)) {
         ipcRenderer.send('spotify-logged-in')
         this.addEventListener('message', (event: MessageEvent) => {
           try {
