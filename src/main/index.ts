@@ -121,9 +121,9 @@ app.whenReady().then(async () => {
   })
   settingsWindow.setMenu(null)
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    settingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    settingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/preferences/index.html')
   } else {
-    settingsWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    settingsWindow.loadFile(join(__dirname, '../renderer/preferences/index.html'))
   }
   settingsWindow.on('resize', () => {
     positionWindowToTray(settingsWindow)

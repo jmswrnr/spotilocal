@@ -39,11 +39,11 @@ export default defineConfig({
   renderer: {
     define,
     build: {
-      minify: 'esbuild'
-    },
-    resolve: {
-      alias: {
-        '@renderer': resolve('src/renderer/src')
+      minify: 'esbuild',
+      rollupOptions: {
+        input: {
+          preferences: resolve(__dirname, 'src/renderer/preferences/index.html'),
+        }
       }
     },
     plugins: [react()]
