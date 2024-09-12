@@ -9,8 +9,9 @@ A simple Windows application that saves your current Spotify track information t
 
 Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different approach for faster updates.
 
-- ⚡ Real-time updates of track information; < 1s delay, no rate limiting
-- 💻 Runs in the background; find it in the system tray
+- ⚡ Instant updates of track information; < 1s delay, no rate limiting.
+- 💻 Runs in the background; find it in the system tray.
+- 🪟 Built-in Web Widget for easy use in OBS browser source.
 
 ## Settings
 
@@ -21,6 +22,14 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 > [!NOTE]  
 > The JSON state file will never be emptied on pause, because it contains the `isPlaying` boolean.
 
+#### Web Widget
+- **Enable Web Widget** - Activates the Web Widget and WebSocket API.
+- **Port Number** - Network port to use for the Web Widget (automatically chosen if empty).
+- **Copy URL** - Copy the URL for the Web Widget.
+
+> [!NOTE]  
+> When adding to OBS as a Browser Source, set the height to 288 and increase width to 2000+. Scale down to preference.
+
 ## Future feature ideas:
 
 - Custom templating for text files
@@ -29,7 +38,6 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 - Display track information in settings menu?
 - Display track controls in settings menu?
 - Spotilocal REST API
-- Spotilocal WebSockets API
 - Support local track metadata and cover art
 - Add support Podcast episode track data
 - Add support Audiobook track data

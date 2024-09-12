@@ -82,7 +82,7 @@ body {
 }
 
 .label,
-.button {
+.item {
   display: flex;
   align-items: center;
   border-radius: 0.75rem;
@@ -120,29 +120,29 @@ body {
   border-radius: 2px;
 }
 
-.button:disabled {
+.item:disabled {
   opacity: 0.6;
 }
 
-.button:not(:disabled) {
+button.item:not(:disabled) {
   cursor: pointer;
 }
 
-.button:not(:disabled):hover {
+button.item:not(:disabled):hover {
   background-color: var(--button-background-color);
 }
 
-.button:focus-visible {
+button.item:focus-visible {
   outline: 1px solid var(--foreground-color);
   z-index: 1;
 }
 
-.button .text {
+.item .text {
   flex: 1;
 }
 
 .label .text,
-.button .right {
+.item .right {
   opacity: 0.6;
 }
 
@@ -155,4 +155,19 @@ body {
     transparent 100%
   );
   height: 1px;
+}
+
+.copied {
+  color: greenyellow;
+  font-weight: bold;
+}
+
+.item input {
+  border: 2px solid;
+  border-radius: 4px;
+}
+
+.item.error input {
+  border-color: red;
+  outline: red;
 }

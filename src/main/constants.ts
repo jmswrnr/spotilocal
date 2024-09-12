@@ -29,4 +29,6 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   saveSmallImage: false,
   saveMediumImage: true,
   saveLargeImage: false,
+  enableWebWidget: false,
+  webWidgetPort: -1,
 }

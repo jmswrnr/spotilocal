@@ -11,6 +11,7 @@ import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
 import { shallow } from 'zustand/shallow'
 import './spotify'
+import './web-widget'
 import { initFiles } from './spotify'
 
 app.commandLine.appendSwitch('wm-window-animations-disabled')

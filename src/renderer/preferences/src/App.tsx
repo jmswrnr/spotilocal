@@ -1,6 +1,29 @@
-import { useLayoutEffect } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
 import useMeasure from 'react-use-measure'
 import { useRemoteApplicationStore } from './useReadApplicationState'
+
+const CopyButton = ({ children, copyText }: { children: ReactNode; copyText: string }) => {
+  const [copied, setCopied] = useState(false)
+  useEffect(() => {
+    if (copied) {
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
+    }
+  }, [copied])
+  return (
+    <button
+      className={'item' + (copied ? ' copied' : '')}
+      onClick={() => {
+        setCopied(true)
+        navigator.clipboard.writeText(copyText)
+      }}
+    >
+      <div className="icon"></div>
+      <div className="text"> {copied ? 'Copied' : children}</div>
+    </button>
+  )
+}
 
 export const App = () => {
   const [ref, bounds] = useMeasure()
@@ -12,7 +35,10 @@ export const App = () => {
     saveSmallImage,
     saveMediumImage,
     saveLargeImage,
-    image
+    image,
+    enableWebWidget,
+    webWidgetPort,
+    webWidgetPortError
   } = useRemoteApplicationStore((state) => ({
     isUpdateAvailable: state?.isUpdateAvailable,
     isLoggedIn: state?.isLoggedIn,
@@ -21,7 +47,10 @@ export const App = () => {
     saveSmallImage: state?.userSettings.saveSmallImage,
     saveMediumImage: state?.userSettings.saveMediumImage,
     saveLargeImage: state?.userSettings.saveLargeImage,
-    image: state?.currentAlbum?.image_small
+    image: state?.currentAlbum?.image_small,
+    enableWebWidget: state?.userSettings.enableWebWidget,
+    webWidgetPort: state?.userSettings.webWidgetPort,
+    webWidgetPortError: state?.webWidgetPortError
   }))
 
   useLayoutEffect(() => {
@@ -39,7 +68,7 @@ export const App = () => {
         </div>
         <div className="hr" />
         <button
-          className="button"
+          className="item"
           onClick={() =>
             window.electron.ipcRenderer.send('set-user-settings', {
               saveSmallImage: !saveSmallImage
@@ -56,7 +85,7 @@ export const App = () => {
         </button>
         <div className="hr" />
         <button
-          className="button"
+          className="item"
           onClick={() =>
             window.electron.ipcRenderer.send('set-user-settings', {
               saveMediumImage: !saveMediumImage
@@ -73,7 +102,7 @@ export const App = () => {
         </button>
         <div className="hr" />
         <button
-          className="button"
+          className="item"
           onClick={() =>
             window.electron.ipcRenderer.send('set-user-settings', {
               saveLargeImage: !saveLargeImage
@@ -91,7 +120,7 @@ export const App = () => {
       </div>
       <div className="section-area">
         <button
-          className="button"
+          className="item"
           onClick={() =>
             window.electron.ipcRenderer.send('set-user-settings', {
               emptyFilesWhenPaused: !emptyFilesWhenPaused
@@ -108,7 +137,7 @@ export const App = () => {
       </div>
       <div className="section-area">
         <button
-          className="button"
+          className="item"
           onClick={() =>
             window.electron.ipcRenderer.send('set-user-settings', {
               saveJsonFile: !saveJsonFile
@@ -124,31 +153,79 @@ export const App = () => {
         </button>
       </div>
       <div className="section-area">
+        <button
+          className="item"
+          onClick={() =>
+            window.electron.ipcRenderer.send('set-user-settings', {
+              enableWebWidget: !enableWebWidget
+            })
+          }
+        >
+          <div className="icon">
+            {typeof enableWebWidget !== 'undefined' ? (
+              <input type="checkbox" checked={enableWebWidget} readOnly />
+            ) : null}
+          </div>
+          <div className="text"> Enable Web Widget</div>
+        </button>
+        {enableWebWidget ? (
+          <>
+            <div className="hr" />
+            <div className={'item' + (webWidgetPortError ? ' error' : '')}>
+              <div className="icon">{webWidgetPortError ? '⚠️': ''}</div>
+              <div className="text"> Port Number</div>
+              <div className="right">
+                <input
+                  type="number"
+                  value={webWidgetPort && webWidgetPort > 0 ? webWidgetPort : ''}
+                  style={{
+                    width: '4rem'
+                  }}
+                  onChange={(e) => {
+                    const value = Number(e.target.value)
+                    if (isNaN(value) || value > 65535) {
+                      return
+                    }
+                    window.electron.ipcRenderer.send('set-user-settings', {
+                      webWidgetPort: value
+                    })
+                  }}
+                />
+              </div>
+            </div>
+            <div className="hr" />
+            <CopyButton copyText={`http://localhost:${webWidgetPort}/web-widget/`}>
+              Copy URL
+            </CopyButton>
+          </>
+        ) : null}
+      </div>
+      <div className="section-area">
         {isUpdateAvailable ? (
-          <button className="button" onClick={() => window.electron.ipcRenderer.send('get-update')}>
+          <button className="item" onClick={() => window.electron.ipcRenderer.send('get-update')}>
             <div className="icon"></div>
             <div className="text">Update available!</div>
           </button>
         ) : (
-          <button className="button" disabled>
+          <button className="item" disabled>
             <div className="icon"></div>
             <div className="text">Up to date!</div>
           </button>
         )}
         <div className="hr" />
         {isLoggedIn ? (
-          <button className="button" onClick={() => window.electron.ipcRenderer.send('logout')}>
+          <button className="item" onClick={() => window.electron.ipcRenderer.send('logout')}>
             <div className="icon"></div>
             <div className="text">Logout</div>
           </button>
         ) : (
-          <button className="button" onClick={() => window.electron.ipcRenderer.send('login')}>
+          <button className="item" onClick={() => window.electron.ipcRenderer.send('login')}>
             <div className="icon"></div>
             <div className="text">Login</div>
           </button>
         )}
         <div className="hr" />
-        <button className="button" onClick={() => window.electron.ipcRenderer.send('quit')}>
+        <button className="item" onClick={() => window.electron.ipcRenderer.send('quit')}>
           <div className="icon"></div>
           <div className="text">Exit</div>
         </button>

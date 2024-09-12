@@ -46,3 +46,4 @@ const resolveCurrentState = (state: ApplicationState) => {
 }
 
 applicationStore.subscribe((state) => resolveCurrentState(state))
+resolveCurrentState(applicationStore.getState())

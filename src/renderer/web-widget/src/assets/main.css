@@ -1,0 +1,40 @@
+* {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+body {
+  padding: 1rem;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 0.1rem 0.3rem black);
+  color: white;
+}
+
+.text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  background-color: black;
+  padding: 2rem 3.5rem 2.5rem 2.5rem;
+  border-radius: 0 1rem 1rem 0;
+  white-space: nowrap;
+}
+
+.cover {
+  width: 16rem;
+  border-radius: 1rem;
+}
+
+.trackName {
+  font-size: 3rem;
+}
+
+.artists {
+  font-size: 2rem;
+  opacity: 0.8;
+}

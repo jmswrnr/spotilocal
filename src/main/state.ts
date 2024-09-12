@@ -22,6 +22,7 @@ export const remoteStateSlice = (state: ApplicationState): RemoteApplicationStat
   isUpdateAvailable: state.isUpdateAvailable,
   isLoggedIn: state.isLoggedIn,
   userSettings: state.userSettings,
+  webWidgetPortError: state.webWidgetPortError,
   ...userStateSlice(state)
 })
 
@@ -35,6 +36,7 @@ export const applicationStore = create<ApplicationState>()(
     trackMap: {},
     albumMap: {},
     imageUriUrlMap: {},
+    webWidgetPortError: false,
     userSettings: {
       ...DEFAULT_USER_SETTINGS,
       ...settingsDiskStore.store

@@ -32,6 +32,8 @@ export type UserSettings = {
   saveSmallImage: boolean
   saveMediumImage: boolean
   saveLargeImage: boolean
+  enableWebWidget: boolean
+  webWidgetPort: number
 }
 
 export interface UserExposedState {
@@ -44,6 +46,7 @@ export interface UserExposedState {
 }
 
 export interface RemoteApplicationState extends UserExposedState {
+  webWidgetPortError: boolean
   isUpdateAvailable: boolean | null
   isLoggedIn: boolean | null
   userSettings: UserSettings
