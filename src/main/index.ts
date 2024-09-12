@@ -43,7 +43,7 @@ export const fetchImageFromRenderer = (url: string): Promise<Uint8Array> => {
 const positionWindowToTray = async (window: BrowserWindow, animate: boolean = false) => {
   const [windowWidth, windowHeight] = window.getSize()
   const position = await computePosition(
-    tray.getBounds(),
+    trayPositionOnWindowOpen,
     { width: windowWidth, height: windowHeight, x: 0, y: 0 },
     {
       platform: {
@@ -57,10 +57,13 @@ const positionWindowToTray = async (window: BrowserWindow, animate: boolean = fa
   window.setPosition(Math.floor(position.x), Math.floor(position.y), animate)
 }
 
+let trayPositionOnWindowOpen: Electron.Rectangle;
+
 const toggleSettingsWindow = async () => {
   if (settingsWindow.isVisible()) {
     settingsWindow.hide()
   } else {
+    trayPositionOnWindowOpen = tray.getBounds()
     await positionWindowToTray(settingsWindow)
     settingsWindow.show()
 
