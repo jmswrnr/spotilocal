@@ -13,6 +13,10 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 - 💻 Runs in the background; find it in the system tray.
 - 🪟 Built-in Web Widget for easy use in OBS browser source.
 
+## Video Tutorials
+
+[![image alt text](https://www.youtube.com/favicon.ico) Show Spotify Song Name in OBS Overlay 2024](https://www.youtube.com/watch?v=ac5xARXRBLI)
+
 ## Settings
 
 - **Empty content files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
