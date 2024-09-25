@@ -65,9 +65,7 @@ export const initializeDefaultImageFiles = () => {
     deleteImageFromDisk('image_large', imgOutputLarge)
   }
   
-  try {
-    fs.unlink(imgOutputLegacy)
-  } catch {}
+  fs.unlink(imgOutputLegacy).catch(() => {})
 }
 
 const createImageUpdaterFunction =
