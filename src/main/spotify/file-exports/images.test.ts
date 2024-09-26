@@ -23,6 +23,7 @@ describe('Cover Art Sizes', async () => {
         }
       })
       const initFiles = await import('../index').then((module) => module.initFiles)
+      vi.mocked(fs.unlink).mockImplementationOnce(async () => {})
       initFiles()
       vi.resetAllMocks()
       applicationStore.setState({

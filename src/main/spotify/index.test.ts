@@ -12,6 +12,7 @@ beforeEach(() => {
 describe('Initializes files', () => {
   spotiTest('Writes blank data on load', async ({ expectBlankTextFilesWrites }) => {
     const initFiles = await import('./index').then((module) => module.initFiles)
+    vi.mocked(fs.unlink).mockImplementation(async () => {})
     initFiles()
     await vi.waitFor(expectBlankTextFilesWrites)
     expect(fs.writeFile).toBeCalledTimes(6)
@@ -19,6 +20,7 @@ describe('Initializes files', () => {
 
   spotiTest('Deletes legacy image', async () => {
     const initFiles = await import('./index').then((module) => module.initFiles)
+    vi.mocked(fs.unlink).mockImplementation(async () => {})
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
@@ -40,6 +42,7 @@ describe('Initializes files', () => {
       }
     })
     vi.resetAllMocks()
+    vi.mocked(fs.unlink).mockImplementation(async () => {})
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
@@ -67,6 +70,7 @@ describe('Initializes files', () => {
       }
     })
     vi.resetAllMocks()
+    vi.mocked(fs.unlink).mockImplementationOnce(async () => {})
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
