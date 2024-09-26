@@ -1,24 +1,26 @@
 import { Artist, Track } from '@shared/types/state'
 import fs from 'node:fs/promises'
-import { txtArtist, txtMain, txtTrack, txtURI } from '../../constants'
+import { txtArtist, txtMain, txtTrack, txtURILegacy } from '../../constants'
 import { applicationStore } from '../../state'
 import { shallow } from 'zustand/shallow'
 import { formatArtists, formatName } from '../utils'
 
 let savedTrackUri: string | undefined
 
+export const initializeTrackFiles = () => {
+  fs.unlink(txtURILegacy).catch(() => {})
+}
+
 const writeTrackToDisk = async (track: Track, artists: Artist[]) => {
   savedTrackUri = track.uri
   fs.writeFile(txtMain, formatName(track, artists))
   fs.writeFile(txtArtist, formatArtists(artists))
   fs.writeFile(txtTrack, track.name)
-  fs.writeFile(txtURI, track.uri)
 }
 
 export const writeBlankTrackToDisk = async () => {
   savedTrackUri = undefined
   fs.writeFile(txtTrack, '')
-  fs.writeFile(txtURI, '')
   fs.writeFile(txtArtist, '')
   fs.writeFile(txtMain, '')
 }
@@ -42,6 +44,7 @@ const saveCurrentTrack = (
     writeBlankTrackToDisk()
   }
 }
+
 applicationStore.subscribe(
   (state) => ({
     isPlaying: state.isPlaying,

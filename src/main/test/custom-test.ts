@@ -107,7 +107,6 @@ const expectBlankTextFilesWrites = async () => {
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '')
-  expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_URI.txt', '')
 }
 
 const expected1337TrackFileWrites = async () => {
@@ -118,10 +117,6 @@ const expected1337TrackFileWrites = async () => {
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Artist.txt', '1337 Artist')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Track.txt', '1337 Track')
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Album.txt', '1337 Album')
-  expect(fs.writeFile).toBeCalledWith(
-    '\\mocked-output\\dir\\Spotilocal_URI.txt',
-    'spotify:track:1337'
-  )
 }
 
 vi.mock('../env', () => ({

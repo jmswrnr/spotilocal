@@ -14,7 +14,7 @@ describe('Initializes files', () => {
     const initFiles = await import('./index').then((module) => module.initFiles)
     initFiles()
     await vi.waitFor(expectBlankTextFilesWrites)
-    expect(fs.writeFile).toBeCalledTimes(6)
+    expect(fs.writeFile).toBeCalledTimes(5)
   })
 
   spotiTest('Deletes legacy image', async () => {

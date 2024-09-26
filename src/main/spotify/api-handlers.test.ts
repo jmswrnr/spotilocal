@@ -83,12 +83,12 @@ describe('Handle Spotify track data', async () => {
       vi.clearAllMocks()
       handleSpotifyPlayerState(state1337TrackPlaying)
       await expected1337TrackFileWrites()
-      expect(fs.writeFile).toBeCalledTimes(6)
+      expect(fs.writeFile).toBeCalledTimes(5)
 
       vi.clearAllMocks()
       handleSpotifyPlayerState(state1337TrackPaused)
       await expectBlankTextFilesWrites()
-      expect(fs.writeFile).toBeCalledTimes(6)
+      expect(fs.writeFile).toBeCalledTimes(5)
     }
   )
 

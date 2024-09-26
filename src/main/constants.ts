@@ -5,7 +5,7 @@ import { UserSettings } from '@shared/types/state'
 export const filePrefix = 'Spotilocal'
 
 export const txtTrack = path.join(outputDirectory, `${filePrefix}_Track.txt`)
-export const txtURI = path.join(outputDirectory, `${filePrefix}_URI.txt`)
+export const txtURILegacy = path.join(outputDirectory, `${filePrefix}_URI.txt`)
 export const txtArtist = path.join(outputDirectory, `${filePrefix}_Artist.txt`)
 export const txtAlbum = path.join(outputDirectory, `${filePrefix}_Album.txt`)
 export const txtMain = path.join(outputDirectory, `${filePrefix}.txt`)
