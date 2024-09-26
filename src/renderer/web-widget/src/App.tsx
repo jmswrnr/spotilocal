@@ -11,7 +11,7 @@ export const App = () => {
     <img className="cover" src={state?.currentAlbum?.image_medium}/>
     <div className="text">
     <div className="trackName">{state?.currentTrack?.name}</div>
-    <div className="artists">{state?.currentTrack?.artists.map((artist) => artist.name).join(', ')}</div>
+    <div className="artists">{state?.currentArtists?.map((artist) => artist.name).join(', ')}</div>
     </div>
   </div>
 }

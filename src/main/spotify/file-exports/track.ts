@@ -1,15 +1,16 @@
-import { ResolvedTrack } from '@shared/types/state'
+import { Artist, ResolvedTrack } from '@shared/types/state'
 import fs from 'node:fs/promises'
 import { txtArtist, txtMain, txtTrack, txtURI } from '../../constants'
 import { applicationStore } from '../../state'
 import { shallow } from 'zustand/shallow'
+import { formatArtists, formatName } from '../utils'
 
 let savedTrackUri: string | undefined
 
-const writeTrackToDisk = async (track: ResolvedTrack) => {
+const writeTrackToDisk = async (track: ResolvedTrack, artists: Artist[]) => {
   savedTrackUri = track.uri
-  fs.writeFile(txtMain, `${track.name} - ${track.artists.map((artist) => artist.name).join(', ')}`)
-  fs.writeFile(txtArtist, track.artists.map((artist) => artist.name).join(', '))
+  fs.writeFile(txtMain, formatName(track, artists))
+  fs.writeFile(txtArtist, formatArtists(artists))
   fs.writeFile(txtTrack, track.name)
   fs.writeFile(txtURI, track.uri)
 }
@@ -25,13 +26,14 @@ export const writeBlankTrackToDisk = async () => {
 const saveCurrentTrack = (
   isPlaying: boolean,
   track: ResolvedTrack | undefined,
+  artists: Artist[] | undefined,
   emptyFilesWhenPaused: boolean
 ) => {
   const shouldbeEmpty = !isPlaying && emptyFilesWhenPaused
 
-  if (!shouldbeEmpty && track) {
+  if (!shouldbeEmpty && track && artists) {
     if (savedTrackUri !== track.uri) {
-      writeTrackToDisk(track)
+      writeTrackToDisk(track, artists)
     }
     return
   }
@@ -44,8 +46,15 @@ applicationStore.subscribe(
   (state) => ({
     isPlaying: state.isPlaying,
     currentTrack: state.currentTrack,
+    currentArtists: state.currentArtists,
     emptyFilesWhenPaused: state.userSettings.emptyFilesWhenPaused
   }),
-  (slice) => saveCurrentTrack(slice.isPlaying, slice.currentTrack, slice.emptyFilesWhenPaused),
+  (slice) =>
+    saveCurrentTrack(
+      slice.isPlaying,
+      slice.currentTrack,
+      slice.currentArtists,
+      slice.emptyFilesWhenPaused
+    ),
   { equalityFn: shallow }
 )

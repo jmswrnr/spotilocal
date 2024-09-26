@@ -13,14 +13,18 @@ export const handleSpotifyTrackData = (tracks: any) => {
           const cleanTrack: Track = {
             uri: track.uri,
             albumUri: track.album.uri,
-            name: track.name,
-            artists: track.artists.map((artist) => ({
-              name: artist.name,
-              uri: artist.uri
-            }))
+            artistUris: track.artists.map((artist) => artist.uri),
+            name: track.name
           }
 
           state.trackMap[cleanTrack.uri] = cleanTrack
+
+          for (const artist of track.artists) {
+            state.artistMap[artist.uri] = {
+              name: artist.name,
+              uri: artist.uri
+            }
+          }
 
           if (track.linked_from?.uri) {
             cleanTrack.linkedFromUri = track.linked_from.uri

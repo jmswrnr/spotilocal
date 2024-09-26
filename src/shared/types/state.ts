@@ -8,7 +8,7 @@ export type Track = {
   linkedFromUri?: string
   albumUri: string
   name: string
-  artists: Artist[]
+  artistUris: string[]
 }
 
 export type ResolvedTrack = Track
@@ -43,6 +43,7 @@ export interface UserExposedState {
   lastUpdatedAt?: number
   currentTrack?: Track
   currentAlbum?: ResolvedAlbum
+  currentArtists?: Artist[]
 }
 
 export interface RemoteApplicationState extends UserExposedState {
@@ -56,5 +57,6 @@ export interface ApplicationState extends RemoteApplicationState {
   currentTrackUri?: string
   trackMap: Record<string, Track | undefined>
   albumMap: Record<string, Album | undefined>
+  artistMap: Record<string, Artist | undefined>
   imageUriUrlMap: Record<string, Images>
 }

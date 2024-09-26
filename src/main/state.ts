@@ -15,7 +15,8 @@ export const userStateSlice = (state: RemoteApplicationState): UserExposedState 
   durationMs: state.durationMs,
   lastUpdatedAt: state.lastUpdatedAt,
   currentTrack: state.currentTrack,
-  currentAlbum: state.currentAlbum
+  currentAlbum: state.currentAlbum,
+  currentArtists: state.currentArtists
 })
 
 export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
@@ -35,6 +36,7 @@ export const applicationStore = create<ApplicationState>()(
     durationMs: 0,
     trackMap: {},
     albumMap: {},
+    artistMap: {},
     imageUriUrlMap: {},
     webWidgetPortError: false,
     userSettings: {

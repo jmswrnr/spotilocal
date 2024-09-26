@@ -1,5 +1,5 @@
 import { applicationStore } from '../state'
-import { ApplicationState } from '@shared/types/state'
+import { ApplicationState, Artist } from '@shared/types/state'
 
 const resolveCurrentState = (state: ApplicationState) => {
   if (!state.currentTrackUri) {
@@ -18,6 +18,19 @@ const resolveCurrentState = (state: ApplicationState) => {
     applicationStore.setState({
       currentTrack: undefined
     })
+  }
+
+  const artists = track?.artistUris.map((artistUri) => state.artistMap[artistUri])
+
+  if (artists) {
+    if (
+      !artists.includes(undefined) &&
+      artists.some((artist, index) => artist?.uri !== state.currentArtists?.[index]?.uri)
+    ) {
+      applicationStore.setState({
+        currentArtists: artists as Artist[]
+      })
+    }
   }
 
   const album = track && state.albumMap[track.albumUri]

@@ -45,14 +45,7 @@ describe('saveJsonFile', async () => {
           '  "lastUpdatedAt": 1719432114603,\n' +
           '  "currentTrack": {\n' +
           '    "uri": "spotify:track:1337",\n' +
-          '    "albumUri": "spotify:album:1337",\n' +
-          '    "name": "1337 Track",\n' +
-          '    "artists": [\n' +
-          '      {\n' +
-          '        "name": "1337 Artist",\n' +
-          '        "uri": "spotify:artist:1337"\n' +
-          '      }\n' +
-          '    ]\n' +
+          '    "name": "1337 Track"\n' +
           '  },\n' +
           '  "currentAlbum": {\n' +
           '    "uri": "spotify:album:1337",\n' +
@@ -60,7 +53,13 @@ describe('saveJsonFile', async () => {
           '    "image_small": "https://1337-64-test-image.png",\n' +
           '    "image_medium": "https://1337-300-test-image.png",\n' +
           '    "image_large": "https://1337-640-test-image.png"\n' +
-          '  }\n' +
+          '  },\n' +
+          '  "currentArtists": [\n' +
+          '    {\n' +
+          '      "name": "1337 Artist",\n' +
+          '      "uri": "spotify:artist:1337"\n' +
+          '    }\n' +
+          '  ]\n' +
           '}'
       )
     })

@@ -106,11 +106,8 @@ describe('Handle Spotify track data', async () => {
       {
         "spotify:track:1234": {
           "albumUri": "spotify:album:888",
-          "artists": [
-            {
-              "name": "888 Artist",
-              "uri": "spotify:artist:888",
-            },
+          "artistUris": [
+            "spotify:artist:888",
           ],
           "linkedFromUri": "spotify:track:1234",
           "name": "888 Track",
@@ -118,26 +115,32 @@ describe('Handle Spotify track data', async () => {
         },
         "spotify:track:1337": {
           "albumUri": "spotify:album:1337",
-          "artists": [
-            {
-              "name": "1337 Artist",
-              "uri": "spotify:artist:1337",
-            },
+          "artistUris": [
+            "spotify:artist:1337",
           ],
           "name": "1337 Track",
           "uri": "spotify:track:1337",
         },
         "spotify:track:888": {
           "albumUri": "spotify:album:888",
-          "artists": [
-            {
-              "name": "888 Artist",
-              "uri": "spotify:artist:888",
-            },
+          "artistUris": [
+            "spotify:artist:888",
           ],
           "linkedFromUri": "spotify:track:1234",
           "name": "888 Track",
           "uri": "spotify:track:888",
+        },
+      }
+    `)
+    expect(newState.artistMap).toMatchInlineSnapshot(`
+      {
+        "spotify:artist:1337": {
+          "name": "1337 Artist",
+          "uri": "spotify:artist:1337",
+        },
+        "spotify:artist:888": {
+          "name": "888 Artist",
+          "uri": "spotify:artist:888",
         },
       }
     `)
