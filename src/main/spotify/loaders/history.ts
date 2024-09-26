@@ -10,7 +10,7 @@ export type HistoryJson = {
   latestPlaybackId?: string
 }
 
-export const loadHistoryJson = (): HistoryJson => {
+export const loadHistoryJson = (): HistoryJson | null => {
   try {
     const jsonString = fs.readFileSync(historyJsonOutput, 'utf-8')
     return JSON.parse(jsonString)
