@@ -20,15 +20,16 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 ## Settings
 
 - **Empty content files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
-- **Small / Medium / Large Cover Art Image** - Specify which resolutions of the cover art image you want to save.
+- **Small / Medium / Large cover art image** - Specify which resolutions of the cover art image you want to save.
 - **Save JSON file** - Save player state to JSON file.
+- **Save track history** - Saves a history of tracks you listen to in JSON, CSV, and Text.
 
 > [!NOTE]  
-> The JSON state file will never be emptied on pause, because it contains the `isPlaying` boolean.
+> The JSON state and track history files will never be emptied on pause.
 
 #### Web Widget
-- **Enable Web Widget** - Activates the Web Widget and WebSocket API.
-- **Port Number** - Network port to use for the Web Widget (automatically chosen if empty).
+- **Enable web widget** - Activates the Web Widget and WebSocket API.
+- **Port number** - Network port to use for the Web Widget (automatically chosen if empty).
 - **Copy URL** - Copy the URL for the Web Widget.
 
 > [!NOTE]  
@@ -38,7 +39,7 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 
 - Custom templating for text files
 - Custom output directory?
-- Previous / Next tracks
+- Next tracks
 - Display track information in settings menu?
 - Display track controls in settings menu?
 - Spotilocal REST API
