@@ -16,7 +16,7 @@ enum ImageState {
   Transparent = 'transparent'
 }
 
-let savedImageUrls: Record<keyof Images, string | ImageState> = {
+const savedImageUrls: Record<keyof Images, string | ImageState> = {
   image_small: ImageState.Deleted,
   image_medium: ImageState.Deleted,
   image_large: ImageState.Deleted
@@ -47,24 +47,24 @@ export const initializeDefaultImageFiles = () => {
     userSettings: { saveSmallImage, saveMediumImage, saveLargeImage }
   } = applicationStore.getState()
 
-  if(saveSmallImage) {
+  if (saveSmallImage) {
     writeBlankImageToDisk('image_small', imgOutputSmall)
   } else {
     deleteImageFromDisk('image_small', imgOutputSmall)
   }
 
-  if(saveMediumImage) {
+  if (saveMediumImage) {
     writeBlankImageToDisk('image_medium', imgOutputMedium)
   } else {
     deleteImageFromDisk('image_medium', imgOutputMedium)
   }
 
-  if(saveLargeImage) {
+  if (saveLargeImage) {
     writeBlankImageToDisk('image_large', imgOutputLarge)
   } else {
     deleteImageFromDisk('image_large', imgOutputLarge)
   }
-  
+
   fs.unlink(imgOutputLegacy).catch(() => {})
 }
 
@@ -139,13 +139,13 @@ const cleanupImages = async (
   saveMediumImage: boolean,
   saveLargeImage: boolean
 ) => {
-  if(!saveSmallImage && savedImageUrls.image_small !== ImageState.Deleted) {
+  if (!saveSmallImage && savedImageUrls.image_small !== ImageState.Deleted) {
     deleteImageFromDisk('image_small', imgOutputSmall)
   }
-  if(!saveMediumImage && savedImageUrls.image_medium !== ImageState.Deleted) {
+  if (!saveMediumImage && savedImageUrls.image_medium !== ImageState.Deleted) {
     deleteImageFromDisk('image_medium', imgOutputMedium)
   }
-  if(!saveLargeImage && savedImageUrls.image_large !== ImageState.Deleted) {
+  if (!saveLargeImage && savedImageUrls.image_large !== ImageState.Deleted) {
     deleteImageFromDisk('image_large', imgOutputLarge)
   }
 }

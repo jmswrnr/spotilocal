@@ -156,9 +156,9 @@ vi.mock('node:os', () => ({
   EOL: '\n'
 }))
 
-const csvWriter = ({
+const csvWriter = {
   on: vi.fn().mockImplementation(() => csvWriter)
-})
+}
 
 vi.mock('@fast-csv/format', () => ({
   writeToPath: vi.fn().mockImplementation(() => csvWriter)
@@ -173,5 +173,5 @@ export const spotiTest = test.extend({
   state1337TrackPaused,
   state1337TrackPlaying,
   state888TrackPaused,
-  state888TrackPlaying,
+  state888TrackPlaying
 })

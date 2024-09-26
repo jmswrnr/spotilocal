@@ -95,7 +95,7 @@ const resolveCurrentState = async (state: ApplicationState, previousState?: Appl
   ) {
     applicationStore.setState({ webWidgetPortError: false })
   }
-  
+
   if (server.listening) {
     const port = (server.address() as AddressInfo | null)?.port
     if (

@@ -42,8 +42,7 @@ describe('History Loader', () => {
     })
 
     spotiTest('State is ok if invalid JSON file is loaded', async () => {
-      const mockHistory = {
-      }
+      const mockHistory = {}
       vi.mocked(fs.readFileSync).mockImplementationOnce(() => JSON.stringify(mockHistory))
       await import('../index')
       const { applicationStore } = await import('../../state')

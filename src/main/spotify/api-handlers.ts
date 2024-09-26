@@ -71,7 +71,7 @@ export const handleSpotifyPlayerState = (player_state: any) => {
       state.durationMs = parseInt(player_state.duration) || 0
       state.isPlaying = !player_state.is_paused
       state.positionMs = parseInt(player_state.position_as_of_timestamp) || 0
-      state.currentPlaybackId = player_state.playback_id;
+      state.currentPlaybackId = player_state.playback_id
       state.currentTrackUri = player_state.track?.uri || undefined
       if (
         player_state.track?.uri &&

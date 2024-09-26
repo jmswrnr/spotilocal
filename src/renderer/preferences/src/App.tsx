@@ -190,7 +190,7 @@ export const App = () => {
           <>
             <div className="hr" />
             <div className={'item' + (webWidgetPortError ? ' error' : '')}>
-              <div className="icon">{webWidgetPortError ? '⚠️': ''}</div>
+              <div className="icon">{webWidgetPortError ? '⚠️' : ''}</div>
               <div className="text"> Port Number</div>
               <div className="right">
                 <input

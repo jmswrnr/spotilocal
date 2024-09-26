@@ -43,7 +43,7 @@ export default defineConfig({
       rollupOptions: {
         input: {
           preferences: resolve(__dirname, 'src/renderer/preferences/index.html'),
-          'web-widget': resolve(__dirname, 'src/renderer/web-widget/index.html'),
+          'web-widget': resolve(__dirname, 'src/renderer/web-widget/index.html')
         }
       }
     },
