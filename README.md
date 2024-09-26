@@ -22,10 +22,13 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 - **Empty content files when paused** - Update cover art to transparent image, and empty text file contents when you pause Spotify.
 - **Small / Medium / Large cover art image** - Specify which resolutions of the cover art image you want to save.
 - **Save JSON file** - Save player state to JSON file.
-- **Save track history** - Saves a history of tracks you listen to in JSON, CSV, and Text.
+- **Save track history** - Saves a history of tracks you listen to in JSON, CSV, and text file.
 
 > [!NOTE]  
 > The JSON state and track history files will never be emptied on pause.
+
+> [!IMPORTANT]  
+> Deleting the track history JSON file will result in data loss. It will also delete the CSV and text file contents.
 
 #### Web Widget
 - **Enable web widget** - Activates the Web Widget and WebSocket API.
