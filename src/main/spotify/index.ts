@@ -4,6 +4,7 @@ import './file-exports/album'
 import './file-exports/track'
 import './file-exports/images'
 import './file-exports/json'
+import './file-exports/history'
 
 import { initializeDefaultImageFiles } from './file-exports/images'
 import { writeBlankTrackToDisk } from './file-exports/track'

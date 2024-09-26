@@ -88,6 +88,19 @@ const state1337TrackPlaying = {
     uri: 'spotify:track:1337'
   }
 } as const
+const state888TrackPaused = {
+  ...state1337TrackPaused,
+  track: {
+    uri: 'spotify:track:888'
+  }
+} as const
+
+const state888TrackPlaying = {
+  ...state1337TrackPlaying,
+  track: {
+    uri: 'spotify:track:888'
+  }
+} as const
 
 const expectBlankTextFilesWrites = async () => {
   expect(fs.writeFile).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.txt', '')
@@ -133,6 +146,24 @@ vi.mock('node:fs/promises', () => ({
   }
 }))
 
+vi.mock('node:fs', () => ({
+  default: {
+    readFileSync: vi.fn()
+  }
+}))
+
+vi.mock('node:os', () => ({
+  EOL: '\n'
+}))
+
+const csvWriter = ({
+  on: vi.fn().mockImplementation(() => csvWriter)
+})
+
+vi.mock('@fast-csv/format', () => ({
+  writeToPath: vi.fn().mockImplementation(() => csvWriter)
+}))
+
 export const spotiTest = test.extend({
   expected1337TrackFileWrites: (async ({}, use) =>
     use(expected1337TrackFileWrites)) as typeof expected1337TrackFileWrites,
@@ -140,5 +171,7 @@ export const spotiTest = test.extend({
     use(expectBlankTextFilesWrites)) as typeof expectBlankTextFilesWrites,
   trackData,
   state1337TrackPaused,
-  state1337TrackPlaying
+  state1337TrackPlaying,
+  state888TrackPaused,
+  state888TrackPlaying,
 })

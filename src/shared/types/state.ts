@@ -11,8 +11,6 @@ export type Track = {
   artistUris: string[]
 }
 
-export type ResolvedTrack = Track
-
 export type Album = {
   uri: string
   name: string
@@ -26,6 +24,11 @@ export type Images = {
 
 export type ResolvedAlbum = Album & Partial<Images>
 
+export type TrackHistoryEntry = {
+  trackUri: string
+  timestamp: number
+}
+
 export type UserSettings = {
   emptyFilesWhenPaused: boolean
   saveJsonFile: boolean
@@ -34,6 +37,7 @@ export type UserSettings = {
   saveLargeImage: boolean
   enableWebWidget: boolean
   webWidgetPort: number
+  enableHistory: boolean
 }
 
 export interface UserExposedState {
@@ -59,4 +63,7 @@ export interface ApplicationState extends RemoteApplicationState {
   albumMap: Record<string, Album | undefined>
   artistMap: Record<string, Artist | undefined>
   imageUriUrlMap: Record<string, Images>
+  currentPlaybackId?: string
+  latestStoredPlaybackId?: string
+  playbackHistory: TrackHistoryEntry[]
 }

@@ -8,6 +8,7 @@ import { subscribeWithSelector } from 'zustand/middleware'
 import { settingsDiskStore } from './disk-storage'
 import { shallow } from 'zustand/shallow'
 import { DEFAULT_USER_SETTINGS } from './constants'
+import { loadHistoryJson } from './spotify/loaders/history'
 
 export const userStateSlice = (state: RemoteApplicationState): UserExposedState => ({
   isPlaying: state.isPlaying,
@@ -27,6 +28,8 @@ export const remoteStateSlice = (state: ApplicationState): RemoteApplicationStat
   ...userStateSlice(state)
 })
 
+const historyJson = loadHistoryJson()
+
 export const applicationStore = create<ApplicationState>()(
   subscribeWithSelector((_set) => ({
     isUpdateAvailable: null,
@@ -34,11 +37,13 @@ export const applicationStore = create<ApplicationState>()(
     isPlaying: false,
     positionMs: 0,
     durationMs: 0,
-    trackMap: {},
-    albumMap: {},
-    artistMap: {},
+    trackMap: historyJson?.trackMap || {},
+    albumMap: historyJson?.albumMap || {},
+    artistMap: historyJson?.artistMap || {},
     imageUriUrlMap: {},
     webWidgetPortError: false,
+    playbackHistory: historyJson?.history || [],
+    latestStoredPlaybackId: historyJson?.latestPlaybackId,
     userSettings: {
       ...DEFAULT_USER_SETTINGS,
       ...settingsDiskStore.store

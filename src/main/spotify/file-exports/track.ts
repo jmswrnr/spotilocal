@@ -1,4 +1,4 @@
-import { Artist, ResolvedTrack } from '@shared/types/state'
+import { Artist, Track } from '@shared/types/state'
 import fs from 'node:fs/promises'
 import { txtArtist, txtMain, txtTrack, txtURI } from '../../constants'
 import { applicationStore } from '../../state'
@@ -7,7 +7,7 @@ import { formatArtists, formatName } from '../utils'
 
 let savedTrackUri: string | undefined
 
-const writeTrackToDisk = async (track: ResolvedTrack, artists: Artist[]) => {
+const writeTrackToDisk = async (track: Track, artists: Artist[]) => {
   savedTrackUri = track.uri
   fs.writeFile(txtMain, formatName(track, artists))
   fs.writeFile(txtArtist, formatArtists(artists))
@@ -25,7 +25,7 @@ export const writeBlankTrackToDisk = async () => {
 
 const saveCurrentTrack = (
   isPlaying: boolean,
-  track: ResolvedTrack | undefined,
+  track: Track | undefined,
   artists: Artist[] | undefined,
   emptyFilesWhenPaused: boolean
 ) => {

@@ -11,6 +11,10 @@ export const txtAlbum = path.join(outputDirectory, `${filePrefix}_Album.txt`)
 export const txtMain = path.join(outputDirectory, `${filePrefix}.txt`)
 export const jsonOutput = path.join(outputDirectory, `${filePrefix}.json`)
 
+export const historyJsonOutput = path.join(outputDirectory, `${filePrefix}_History.json`)
+export const historyTxtOutput = path.join(outputDirectory, `${filePrefix}_History.txt`)
+export const historyCsvOutput = path.join(outputDirectory, `${filePrefix}_History.csv`)
+
 export const imgOutputLegacy = path.join(outputDirectory, `${filePrefix}.png`)
 export const imgOutputSmall = path.join(outputDirectory, `${filePrefix}_Small.png`)
 export const imgOutputMedium = path.join(outputDirectory, `${filePrefix}_Medium.png`)
@@ -31,4 +35,5 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   saveLargeImage: false,
   enableWebWidget: false,
   webWidgetPort: -1,
+  enableHistory: false
 }

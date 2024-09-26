@@ -38,7 +38,8 @@ export const App = () => {
     image,
     enableWebWidget,
     webWidgetPort,
-    webWidgetPortError
+    webWidgetPortError,
+    enableHistory
   } = useRemoteApplicationStore((state) => ({
     isUpdateAvailable: state?.isUpdateAvailable,
     isLoggedIn: state?.isLoggedIn,
@@ -50,7 +51,8 @@ export const App = () => {
     image: state?.currentAlbum?.image_small,
     enableWebWidget: state?.userSettings.enableWebWidget,
     webWidgetPort: state?.userSettings.webWidgetPort,
-    webWidgetPortError: state?.webWidgetPortError
+    webWidgetPortError: state?.webWidgetPortError,
+    enableHistory: state?.userSettings.enableHistory
   }))
 
   useLayoutEffect(() => {
@@ -150,6 +152,22 @@ export const App = () => {
             ) : null}
           </div>
           <div className="text"> Save JSON state file</div>
+        </button>
+        <div className="hr" />
+        <button
+          className="item"
+          onClick={() =>
+            window.electron.ipcRenderer.send('set-user-settings', {
+              enableHistory: !enableHistory
+            })
+          }
+        >
+          <div className="icon">
+            {typeof enableHistory !== 'undefined' ? (
+              <input type="checkbox" checked={enableHistory} readOnly />
+            ) : null}
+          </div>
+          <div className="text"> Save track history</div>
         </button>
       </div>
       <div className="section-area">
