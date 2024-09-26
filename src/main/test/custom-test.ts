@@ -129,7 +129,7 @@ vi.mock('../disk-storage', () => ({
 vi.mock('node:fs/promises', () => ({
   default: {
     writeFile: vi.fn(),
-    unlink: vi.fn()
+    unlink: vi.fn().mockImplementation(async () => {})
   }
 }))
 

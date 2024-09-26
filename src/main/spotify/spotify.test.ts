@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import { DEFAULT_USER_SETTINGS } from '../constants'
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  vi.clearAllMocks()
   vi.resetModules()
 })
 
@@ -28,7 +28,7 @@ describe('User settings', async () => {
             }
           })
 
-          vi.resetAllMocks()
+          vi.clearAllMocks()
           handleSpotifyTrackData(trackData)
           handleSpotifyPlayerState(state1337TrackPaused)
 
@@ -50,7 +50,7 @@ describe('User settings', async () => {
 
         handleSpotifyTrackData(trackData)
         handleSpotifyPlayerState(state1337TrackPlaying)
-        vi.resetAllMocks()
+        vi.clearAllMocks()
         handleSpotifyPlayerState({
           timestamp: '1719432114604',
           is_paused: true
@@ -81,7 +81,7 @@ describe('User settings', async () => {
             uri: 'spotify:track:1337'
           }
         })
-        vi.resetAllMocks()
+        vi.clearAllMocks()
         handleSpotifyPlayerState({
           timestamp: '1719432114604',
           is_paused: true

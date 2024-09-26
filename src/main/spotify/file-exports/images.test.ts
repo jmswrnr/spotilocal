@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS, transparent1px } from '../../constants'
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  vi.clearAllMocks()
   vi.resetModules()
 })
 
@@ -23,9 +23,8 @@ describe('Cover Art Sizes', async () => {
         }
       })
       const initFiles = await import('../index').then((module) => module.initFiles)
-      vi.mocked(fs.unlink).mockImplementationOnce(async () => {})
       initFiles()
-      vi.resetAllMocks()
+      vi.clearAllMocks()
       applicationStore.setState({
         userSettings: {
           ...DEFAULT_USER_SETTINGS,
@@ -60,7 +59,7 @@ describe('Cover Art Sizes', async () => {
         }
       })
       await import('../index')
-      vi.resetAllMocks()
+      vi.clearAllMocks()
       applicationStore.setState({
         userSettings: {
           ...DEFAULT_USER_SETTINGS,
@@ -181,7 +180,7 @@ describe('Cover Art Sizes', async () => {
         saveLargeImage: false
       }
     })
-    vi.resetAllMocks()
+    vi.clearAllMocks()
     handleSpotifyTrackData(trackData)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([
@@ -206,7 +205,7 @@ describe('Cover Art Sizes', async () => {
         saveLargeImage: false
       }
     })
-    vi.resetAllMocks()
+    vi.clearAllMocks()
     handleSpotifyTrackData(trackData)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([
@@ -231,7 +230,7 @@ describe('Cover Art Sizes', async () => {
         saveLargeImage: true
       }
     })
-    vi.resetAllMocks()
+    vi.clearAllMocks()
     handleSpotifyTrackData(trackData)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([

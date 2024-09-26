@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS } from '../constants'
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  vi.clearAllMocks()
   vi.resetModules()
 })
 
@@ -80,12 +80,12 @@ describe('Handle Spotify track data', async () => {
         userSettings: DEFAULT_USER_SETTINGS
       })
 
-      vi.resetAllMocks()
+      vi.clearAllMocks()
       handleSpotifyPlayerState(state1337TrackPlaying)
       await expected1337TrackFileWrites()
       expect(fs.writeFile).toBeCalledTimes(6)
 
-      vi.resetAllMocks()
+      vi.clearAllMocks()
       handleSpotifyPlayerState(state1337TrackPaused)
       await expectBlankTextFilesWrites()
       expect(fs.writeFile).toBeCalledTimes(6)
@@ -100,7 +100,7 @@ describe('Handle Spotify track data', async () => {
     applicationStore.setState({
       userSettings: DEFAULT_USER_SETTINGS
     })
-    vi.resetAllMocks()
+    vi.clearAllMocks()
     const newState = applicationStore.getState()
     expect(newState.trackMap).toMatchInlineSnapshot(`
       {

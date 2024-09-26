@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS } from '../../constants'
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  vi.clearAllMocks()
   vi.resetModules()
 })
 
@@ -24,7 +24,7 @@ describe('saveJsonFile', async () => {
         }
       })
 
-      vi.resetAllMocks()
+      vi.clearAllMocks()
       handleSpotifyTrackData(trackData)
       handleSpotifyPlayerState({
         timestamp: '1719432114603',

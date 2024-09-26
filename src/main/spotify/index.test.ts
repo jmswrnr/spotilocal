@@ -5,14 +5,13 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS, transparent1px } from '../constants'
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  vi.clearAllMocks()
   vi.resetModules()
 })
 
 describe('Initializes files', () => {
   spotiTest('Writes blank data on load', async ({ expectBlankTextFilesWrites }) => {
     const initFiles = await import('./index').then((module) => module.initFiles)
-    vi.mocked(fs.unlink).mockImplementation(async () => {})
     initFiles()
     await vi.waitFor(expectBlankTextFilesWrites)
     expect(fs.writeFile).toBeCalledTimes(6)
@@ -20,7 +19,6 @@ describe('Initializes files', () => {
 
   spotiTest('Deletes legacy image', async () => {
     const initFiles = await import('./index').then((module) => module.initFiles)
-    vi.mocked(fs.unlink).mockImplementation(async () => {})
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
@@ -41,8 +39,7 @@ describe('Initializes files', () => {
         saveLargeImage: false
       }
     })
-    vi.resetAllMocks()
-    vi.mocked(fs.unlink).mockImplementation(async () => {})
+    vi.clearAllMocks()
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
@@ -69,8 +66,7 @@ describe('Initializes files', () => {
         saveLargeImage: true
       }
     })
-    vi.resetAllMocks()
-    vi.mocked(fs.unlink).mockImplementationOnce(async () => {})
+    vi.clearAllMocks()
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
