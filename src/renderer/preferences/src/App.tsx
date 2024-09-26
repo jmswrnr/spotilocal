@@ -82,7 +82,7 @@ export const App = () => {
               <input type="checkbox" checked={saveSmallImage} readOnly />
             ) : null}
           </div>
-          <div className="text">Small Image</div>
+          <div className="text">Small image</div>
           <div className="right">64px</div>
         </button>
         <div className="hr" />
@@ -99,7 +99,7 @@ export const App = () => {
               <input type="checkbox" checked={saveMediumImage} readOnly />
             ) : null}
           </div>
-          <div className="text">Medium Image</div>
+          <div className="text">Medium image</div>
           <div className="right">300px</div>
         </button>
         <div className="hr" />
@@ -116,7 +116,7 @@ export const App = () => {
               <input type="checkbox" checked={saveLargeImage} readOnly />
             ) : null}
           </div>
-          <div className="text">Large Image</div>
+          <div className="text">Large image</div>
           <div className="right">640px</div>
         </button>
       </div>
@@ -184,14 +184,14 @@ export const App = () => {
               <input type="checkbox" checked={enableWebWidget} readOnly />
             ) : null}
           </div>
-          <div className="text"> Enable Web Widget</div>
+          <div className="text"> Enable web widget</div>
         </button>
         {enableWebWidget ? (
           <>
             <div className="hr" />
             <div className={'item' + (webWidgetPortError ? ' error' : '')}>
               <div className="icon">{webWidgetPortError ? '⚠️' : ''}</div>
-              <div className="text"> Port Number</div>
+              <div className="text"> Port number</div>
               <div className="right">
                 <input
                   type="number"
