@@ -38,19 +38,6 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 > [!NOTE]  
 > When adding to OBS as a Browser Source, set the height to 288 and increase width to 2000+. Scale down to preference.
 
-## Future feature ideas:
-
-- Custom templating for text files
-- Custom output directory?
-- Next tracks
-- Display track information in settings menu?
-- Display track controls in settings menu?
-- Spotilocal REST API
-- Support local track metadata and cover art
-- Add support Podcast episode track data
-- Add support Audiobook track data
-- Explore supporting macOS / Linux
-
 # Development
 
 ## How it technically works
