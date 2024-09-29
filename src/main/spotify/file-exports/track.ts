@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import { txtArtist, txtMain, txtTrack, txtURILegacy } from '../../constants'
 import { applicationStore } from '../../state'
 import { shallow } from 'zustand/shallow'
-import { formatArtists, formatName } from '../utils'
+import { formatArtists, formatName } from '@shared/utils'
 
 let savedTrackUri: string | undefined
 

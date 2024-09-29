@@ -6,9 +6,9 @@ import fs from 'node:fs/promises'
 import { writeToPath } from '@fast-csv/format'
 import { historyCsvOutput, historyJsonOutput, historyTxtOutput } from '../../constants'
 import { HistoryJson } from '../loaders/history'
-import { formatArtists, formatName } from '../utils'
 import dayjs from 'dayjs'
 import { EOL } from 'node:os'
+import { formatArtists, formatName } from '@shared/utils'
 
 // Save History Files
 

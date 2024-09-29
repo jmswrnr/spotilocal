@@ -11,7 +11,7 @@ const __LOGIN_URL__ = `https://accounts.spotify.com/login?continue=${encodeURICo
 )}`
 const __WEBSOCKET_HOSTNAME_PARTIAL__ = 'dealer.*\\.spotify\\.com'
 
-const define = {
+export const define = {
   __VERSION__: JSON.stringify(version),
   __PLAYER_HOSTNAME__: JSON.stringify(__PLAYER_HOSTNAME__),
   __PLAYER_URL__: JSON.stringify(__PLAYER_URL__),
@@ -19,12 +19,22 @@ const define = {
   __WEBSOCKET_HOSTNAME_PARTIAL__: JSON.stringify(__WEBSOCKET_HOSTNAME_PARTIAL__)
 }
 
+export const shared = {
+  resolve: {
+    alias: {
+      '@shared': resolve('src/shared')
+    }
+  }
+}
+
 export default defineConfig({
   main: {
+    ...shared,
     define,
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
+    ...shared,
     define,
     plugins: [externalizeDepsPlugin()],
     build: {
@@ -37,6 +47,7 @@ export default defineConfig({
     }
   },
   renderer: {
+    ...shared,
     define,
     build: {
       minify: 'esbuild',
