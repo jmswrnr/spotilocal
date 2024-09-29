@@ -242,6 +242,16 @@ app.whenReady().then(async () => {
     handleSpotifyPlayerState(player_state)
   )
 
+  ipcMain.on('set-system-clock-offset', (_event, drift) => {
+    const systemClockOffset = Number(drift)
+    if (isNaN(systemClockOffset)) {
+      return
+    }
+    applicationStore.setState({
+      systemClockOffset: systemClockOffset
+    })
+  })
+
   app.on('window-all-closed', () => {
     app.quit()
   })

@@ -37,6 +37,7 @@ export const applicationStore = create<ApplicationState>()(
     isPlaying: false,
     positionMs: 0,
     durationMs: 0,
+    systemClockOffset: 0,
     trackMap: historyJson?.trackMap || {},
     albumMap: historyJson?.albumMap || {},
     artistMap: historyJson?.artistMap || {},

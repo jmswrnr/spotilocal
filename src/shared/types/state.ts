@@ -66,4 +66,6 @@ export interface ApplicationState extends RemoteApplicationState {
   currentPlaybackId?: string
   latestStoredPlaybackId?: string
   playbackHistory: TrackHistoryEntry[]
+  systemClockOffset: number
+  serverLastUpdatedAt?: number
 }

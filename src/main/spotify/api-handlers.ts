@@ -67,7 +67,7 @@ export const handleSpotifyPlayerState = (player_state: any) => {
   }
   applicationStore.setState(
     produce<ApplicationState>((state) => {
-      state.lastUpdatedAt = parseInt(player_state.timestamp) || 0
+      state.serverLastUpdatedAt = parseInt(player_state.timestamp) || 0
       state.durationMs = parseInt(player_state.duration) || 0
       state.isPlaying = !player_state.is_paused
       state.positionMs = parseInt(player_state.position_as_of_timestamp) || 0

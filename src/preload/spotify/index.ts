@@ -3,21 +3,35 @@ import { ipcRenderer } from 'electron'
 if (window.fetch.toString().includes('native')) {
   const superFetch = window.fetch
   window.fetch = async (...args) => {
-    const response = await superFetch(...args)
-    try {
-      if (typeof args?.[0] === 'string') {
-        if (args[0].includes('/v1/tracks')) {
+    if (typeof args?.[0] === 'string') {
+      switch (true) {
+        case args[0].includes('/v1/tracks'): {
+          let response = await superFetch(...args)
           const tracks = (await response.clone().json())?.tracks
           tracks && ipcRenderer.send('spotify-track-data', tracks)
-        } else if (args[0].includes('/connect-state/v1')) {
+          return response
+        }
+        case args[0].includes('/connect-state/v1'): {
+          let response = await superFetch(...args)
           const player_state = (await response.clone().json())?.player_state
           player_state && ipcRenderer.send('spotify-player-state', player_state)
+          return response
+        }
+        case args[0].includes('/melody/v1/time'): {
+          const startTimestamp = Date.now()
+          let response = await superFetch(...args)
+          const endTimeStamp = Date.now()
+          const requestDuration = endTimeStamp - startTimestamp
+          const serverTimestamp = (await response.clone().json())?.timestamp
+          const expectedServerTimestamp = startTimestamp + requestDuration * 0.5
+          const timestampDrift = expectedServerTimestamp - serverTimestamp
+          timestampDrift && ipcRenderer.send('set-system-clock-offset', timestampDrift)
+          return response
         }
       }
-    } catch {
-      // error
     }
-    return response
+
+    return await superFetch(...args)
   }
 }
 
