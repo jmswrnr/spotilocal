@@ -1,4 +1,5 @@
 :root {
+  --green: hsl(143, 100%, 50%);
   --border-color: #000;
   --background-color: hsl(245, 21%, 6%);
   --button-background-color: hsl(245, 14%, 15%);
@@ -11,9 +12,10 @@
 
 @media (prefers-color-scheme: light) {
   :root {
+    --green: hsl(143, 100%, 18%);
     --border-color: hsl(245, 16%, 84%);
     --background-color: hsl(245, 12%, 94%);
-    --button-background-color: hsl(0, 0%, 100%);
+    --button-background-color: #fff;
     --foreground-color: #000;
     --window-border-size: 2px;
     color-scheme: light;
@@ -108,6 +110,7 @@ body {
   height: 15px;
   pointer-events: none;
   vertical-align: text-bottom;
+  accent-color: var(--green);
 }
 
 .icon svg {
@@ -158,7 +161,7 @@ button.item:focus-visible {
 }
 
 .copied {
-  color: greenyellow;
+  color: var(--green);
   font-weight: bold;
 }
 
