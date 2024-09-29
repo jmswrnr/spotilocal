@@ -5,13 +5,24 @@
 
 # Spotilocal
 
-A simple Windows application that saves your current Spotify track information to text and image files!
+A simple desktop app that saves your current Spotify track name and cover art to local files! — Inspired by [Snip](https://github.com/dlrudie/Snip), but much faster.
 
-Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different approach for faster updates.
-
-- ⚡ Instant updates of track information; < 1s delay, no rate limiting.
+- ⚡ Instant updates of track information.
 - 💻 Runs in the background; find it in the system tray.
-- 🪟 Built-in Web Widget for easy use in OBS browser source.
+- 🪟 Built-in Web Widget for easy use in OBS Studio browser source.
+- 🌉 WebSocket API to integrate real-time updates with custom projects, [example](src/renderer/web-widget/src/useReadApplicationState.tsx).
+- 📜 Opt-in to save a history of all the tracks you listen to.
+- 🔗 Listen on any other device; does not require Spotify locally.
+
+## Why?
+
+So you can get real-time updates of your Spotify state to integrate into your projects or productions.
+
+#### Examples:
+
+- OBS Studio browser source for livestream overlays.
+- Bespoke presentation on custom displays like a [custom LED screen](https://jmswrnr.com/blog/streaming-a-canvas-to-leds).
+- Keep a local record of all your listening history as requested [here](https://github.com/jmswrnr/spotilocal/issues/2).
 
 ## Video Tutorials
 
@@ -36,7 +47,7 @@ Inspired by [Snip](https://github.com/dlrudie/Snip), but using a different appro
 - **Copy URL** - Copy the URL for the Web Widget.
 
 > [!NOTE]  
-> When adding to OBS as a Browser Source, set the height to 288 and increase width to 2000+. Scale down to preference.
+> When adding to OBS as a Browser Source, set the height to 288 and  width to 2000+. Scale down in the scene to preference.
 
 # Development
 
