@@ -1,9 +1,9 @@
-import type { ApplicationState } from '@shared/types/state'
+import type { RemoteApplicationState } from '@shared/types/state'
 import { create } from 'zustand'
 
-export const useRemoteApplicationStore = create<ApplicationState | null>(() => null)
+export const useRemoteApplicationStore = create<RemoteApplicationState | null>(() => null)
 
-window.electron.ipcRenderer.on('state-update', (_event, state: ApplicationState) => {
+window.electron.ipcRenderer.on('state-update', (_event, state: RemoteApplicationState) => {
   useRemoteApplicationStore.setState(state)
 })
 
