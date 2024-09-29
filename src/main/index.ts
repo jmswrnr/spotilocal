@@ -5,7 +5,7 @@ import { handleSpotifyPlayerState, handleSpotifyTrackData } from './spotify/api-
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { applicationStore, remoteStateSlice } from './state'
 import { isUpdateAvailable as getIsUpdateAvailable } from './update-check'
-import { autoPlacement, computePosition } from '@floating-ui/core'
+import { autoPlacement, computePosition, shift } from '@floating-ui/core'
 import { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
 import { SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
@@ -52,7 +52,12 @@ const positionWindowToTray = async (window: BrowserWindow, animate: boolean = fa
         getDimensions: (element) => element,
         getClippingRect: () => electron.screen.getPrimaryDisplay().workArea
       },
-      middleware: [autoPlacement()]
+      middleware: [
+        autoPlacement(),
+        shift({
+          padding: 16
+        })
+      ]
     }
   )
   window.setPosition(Math.floor(position.x), Math.floor(position.y), animate)
