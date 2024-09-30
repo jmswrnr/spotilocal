@@ -11,8 +11,8 @@ A simple desktop app that saves your current Spotify track name and cover art to
 - 💻 Runs in the background; find it in the system tray.
 - 🪟 Built-in Web Widget for easy use in OBS Studio browser source.
 - 🌉 WebSocket API to integrate real-time updates with custom projects, [example](src/renderer/web-widget/src/useReadApplicationState.tsx).
-- 📜 Opt-in to save a history of all the tracks you listen to.
 - 🔗 Listen on any other device; does not require Spotify locally.
+- 📜 Opt-in to local history of tracks.
 
 ## Why?
 
