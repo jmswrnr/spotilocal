@@ -29,7 +29,7 @@ describe('User settings', async () => {
           })
 
           vi.clearAllMocks()
-          handleSpotifyTrackData(trackData)
+          handleSpotifyTrackData(trackData as any)
           handleSpotifyPlayerState(state1337TrackPaused)
 
           await expected1337TrackFileWrites()
@@ -48,7 +48,7 @@ describe('User settings', async () => {
           }
         })
 
-        handleSpotifyTrackData(trackData)
+        handleSpotifyTrackData(trackData as any)
         handleSpotifyPlayerState(state1337TrackPlaying)
         vi.clearAllMocks()
         handleSpotifyPlayerState({
@@ -72,7 +72,7 @@ describe('User settings', async () => {
           }
         })
 
-        handleSpotifyTrackData(trackData)
+        handleSpotifyTrackData(trackData as any)
         handleSpotifyPlayerState({
           timestamp: '1719432114603',
           is_paused: false,

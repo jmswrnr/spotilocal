@@ -25,7 +25,7 @@ describe('saveJsonFile', async () => {
       })
 
       vi.clearAllMocks()
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState({
         timestamp: '1719432114603',
         is_paused: true,

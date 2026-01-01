@@ -73,7 +73,7 @@ describe('History Exporter', () => {
     spotiTest('CSV Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
       const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
         playback_id: 'playback1'
@@ -97,7 +97,7 @@ describe('History Exporter', () => {
     spotiTest('Text Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
       const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
         playback_id: 'playback1'
@@ -118,7 +118,7 @@ describe('History Exporter', () => {
     spotiTest('JSON Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
       const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
         playback_id: 'playback1'
@@ -216,7 +216,7 @@ describe('History Updater', () => {
       expect(applicationStore.getState().playbackHistory).toStrictEqual([])
 
       // Pausing and playing the same track does not add duplicate
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
         playback_id: 'playback1'

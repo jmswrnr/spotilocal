@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
 import { version } from './package.json'
@@ -31,32 +31,34 @@ export default defineConfig({
   main: {
     ...shared,
     define,
-    plugins: [externalizeDepsPlugin()]
   },
   preload: {
     ...shared,
     define,
-    plugins: [externalizeDepsPlugin()],
     build: {
+      // @ts-ignore
       rollupOptions: {
         input: {
           spotify: resolve(__dirname, 'src/preload/spotify/index.ts'),
           settings: resolve(__dirname, 'src/preload/settings/index.ts')
         }
-      }
+      },
+      isolatedEntries: true
     }
   },
   renderer: {
     ...shared,
     define,
     build: {
+      // @ts-ignore
       minify: 'esbuild',
       rollupOptions: {
         input: {
           preferences: resolve(__dirname, 'src/renderer/preferences/index.html'),
           'web-widget': resolve(__dirname, 'src/renderer/web-widget/index.html')
         }
-      }
+      },
+      isolatedEntries: true
     },
     plugins: [react()]
   }

@@ -67,7 +67,7 @@ const trackData = [
       uri: 'spotify:track:1234'
     }
   }
-]
+] as const
 
 const state1337TrackPaused = {
   timestamp: '1719432114603',

@@ -107,7 +107,7 @@ describe('Cover Art Sizes', async () => {
             saveLargeImage: true
           }
         })
-        handleSpotifyTrackData(trackData)
+        handleSpotifyTrackData(trackData as any)
         handleSpotifyPlayerState(state1337TrackPlaying)
         await Promise.all([
           vi.waitFor(() => {
@@ -143,7 +143,7 @@ describe('Cover Art Sizes', async () => {
           saveLargeImage: true
         }
       })
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       handleSpotifyPlayerState(state1337TrackPlaying)
       await Promise.all([
         vi.waitFor(() => {
@@ -181,7 +181,7 @@ describe('Cover Art Sizes', async () => {
       }
     })
     vi.clearAllMocks()
-    handleSpotifyTrackData(trackData)
+    handleSpotifyTrackData(trackData as any)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([
       vi.waitFor(() => {
@@ -206,7 +206,7 @@ describe('Cover Art Sizes', async () => {
       }
     })
     vi.clearAllMocks()
-    handleSpotifyTrackData(trackData)
+    handleSpotifyTrackData(trackData as any)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([
       vi.waitFor(() => {
@@ -231,7 +231,7 @@ describe('Cover Art Sizes', async () => {
       }
     })
     vi.clearAllMocks()
-    handleSpotifyTrackData(trackData)
+    handleSpotifyTrackData(trackData as any)
     handleSpotifyPlayerState(state1337TrackPlaying)
     await Promise.all([
       vi.waitFor(() => {

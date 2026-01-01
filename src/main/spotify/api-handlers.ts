@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { applicationStore } from '../state'
 import { Album, ApplicationState, Track } from '@shared/types/state'
 
-type TrackDataV1 = {
+export type TrackDataV1 = {
   uri: string
   name: string
   album: {

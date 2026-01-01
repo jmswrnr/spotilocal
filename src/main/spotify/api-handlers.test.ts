@@ -75,7 +75,7 @@ describe('Handle Spotify track data', async () => {
       await import('./index')
       const { handleSpotifyTrackDataV1: handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
       const { applicationStore } = await import('../state')
-      handleSpotifyTrackData(trackData)
+      handleSpotifyTrackData(trackData as any)
       applicationStore.setState({
         userSettings: DEFAULT_USER_SETTINGS
       })
@@ -96,7 +96,7 @@ describe('Handle Spotify track data', async () => {
     await import('./index')
     const { handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('./api-handlers')
     const { applicationStore } = await import('../state')
-    handleSpotifyTrackData(trackData)
+    handleSpotifyTrackData(trackData as any)
     applicationStore.setState({
       userSettings: DEFAULT_USER_SETTINGS
     })
