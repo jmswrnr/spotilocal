@@ -13,7 +13,7 @@ describe('saveJsonFile', async () => {
   describe('enabled', () => {
     spotiTest('write state to json file', async ({ trackData }) => {
       await import('../index')
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       const { applicationStore } = await import('../../state')
 
       applicationStore.setState({

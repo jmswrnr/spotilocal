@@ -73,7 +73,7 @@ describe('Handle Spotify track data', async () => {
       state1337TrackPaused
     }) => {
       await import('./index')
-      const { handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
+      const { handleSpotifyTrackDataV1: handleSpotifyTrackData, handleSpotifyPlayerState } = await import('./api-handlers')
       const { applicationStore } = await import('../state')
       handleSpotifyTrackData(trackData)
       applicationStore.setState({
@@ -94,7 +94,7 @@ describe('Handle Spotify track data', async () => {
 
   spotiTest('Updates state', async ({ trackData }) => {
     await import('./index')
-    const { handleSpotifyTrackData } = await import('./api-handlers')
+    const { handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('./api-handlers')
     const { applicationStore } = await import('../state')
     handleSpotifyTrackData(trackData)
     applicationStore.setState({

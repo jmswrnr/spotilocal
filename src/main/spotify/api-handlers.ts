@@ -2,7 +2,81 @@ import { produce } from 'immer'
 import { applicationStore } from '../state'
 import { Album, ApplicationState, Track } from '@shared/types/state'
 
-export const handleSpotifyTrackData = (tracks: any) => {
+type TrackDataV1 = {
+  uri: string
+  name: string
+  album: {
+    uri: string
+    name: string
+    images: {
+      width: number
+      height: number
+      url: string
+    }[]
+  }
+  artists: {
+    uri: string
+    name: string
+  }[]
+  linked_from?: {
+    uri: string
+  }
+}
+
+type TrackDataV2 = {
+  __typename: 'Track'
+  uri: string
+  name: string
+  albumOfTrack: {
+    uri: string
+    name: string
+    coverArt: {
+      sources: {
+        url: string
+        width: number
+        height: number
+      }[]
+    }
+  }
+  artists: {
+    items:{
+      uri: string
+      profile: {
+        name: string
+      }
+    }[]
+  }
+}
+
+const convertTrackDataV2ToTrackDataV1 = (track: TrackDataV2): TrackDataV1 => {
+  return {
+    uri: track.uri,
+    name: track.name,
+    album: {
+      uri: track.albumOfTrack.uri,
+      name: track.albumOfTrack.name,
+      images: track.albumOfTrack.coverArt.sources.map((source) => ({
+        width: source.width,
+        height: source.height,
+        url: source.url
+      }))
+    },
+    artists: track.artists.items.map((artist) => ({
+      uri: artist.uri,
+      name: artist.profile.name
+    }))
+  }
+}
+
+export const handleSpotifyTrackDataV2 = (tracks: TrackDataV2[] | undefined) => {
+  if (!tracks || !Array.isArray(tracks)) {
+    return
+  }
+  const trackDataV1 = tracks.map((track) => convertTrackDataV2ToTrackDataV1(track))
+  handleSpotifyTrackDataV1(trackDataV1)
+}
+
+export const handleSpotifyTrackDataV1 = (tracks: TrackDataV1[] | undefined) => {
   if (!tracks || !Array.isArray(tracks)) {
     return
   }

@@ -96,7 +96,7 @@ describe('Cover Art Sizes', async () => {
       'updates correct files when play state changes',
       async ({ trackData, state1337TrackPlaying, state1337TrackPaused }) => {
         await import('../index')
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+        const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
         const { applicationStore } = await import('../../state')
         applicationStore.setState({
           userSettings: {
@@ -132,7 +132,7 @@ describe('Cover Art Sizes', async () => {
   describe('All Enabled', async () => {
     spotiTest('saves all 3 images', async ({ trackData, state1337TrackPlaying }) => {
       await import('../index')
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       const { applicationStore } = await import('../../state')
       applicationStore.setState({
         userSettings: {
@@ -169,7 +169,7 @@ describe('Cover Art Sizes', async () => {
   })
   spotiTest('saveSmallImage Only', async ({ trackData, state1337TrackPlaying }) => {
     await import('../index')
-    const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+    const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
     const { applicationStore } = await import('../../state')
     applicationStore.setState({
       userSettings: {
@@ -194,7 +194,7 @@ describe('Cover Art Sizes', async () => {
   })
   spotiTest('saveMediumImage Only', async ({ trackData, state1337TrackPlaying }) => {
     await import('../index')
-    const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+    const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
     const { applicationStore } = await import('../../state')
     applicationStore.setState({
       userSettings: {
@@ -219,7 +219,7 @@ describe('Cover Art Sizes', async () => {
   })
   spotiTest('saveLargeImage Only', async ({ trackData, state1337TrackPlaying }) => {
     await import('../index')
-    const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+    const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
     const { applicationStore } = await import('../../state')
     applicationStore.setState({
       userSettings: {

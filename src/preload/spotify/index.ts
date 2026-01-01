@@ -5,6 +5,14 @@ if (window.fetch.toString().includes('native')) {
   window.fetch = async (...args) => {
     if (typeof args?.[0] === 'string') {
       switch (true) {
+        case args[0].includes('/pathfinder/v2/query'): {
+          let response = await superFetch(...args)
+          const data = (await response.clone().json())?.data
+          if(data && typeof data === 'object' && 'tracks' in data && Array.isArray(data.tracks)) { 
+            ipcRenderer.send('spotify-track-data-v2', data.tracks)
+          }
+          return response
+        }
         case args[0].includes('/v1/tracks'): {
           let response = await superFetch(...args)
           const tracks = (await response.clone().json())?.tracks

@@ -72,7 +72,7 @@ describe('History Exporter', () => {
     })
     spotiTest('CSV Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       handleSpotifyTrackData(trackData)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
@@ -96,7 +96,7 @@ describe('History Exporter', () => {
 
     spotiTest('Text Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       handleSpotifyTrackData(trackData)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
@@ -117,7 +117,7 @@ describe('History Exporter', () => {
 
     spotiTest('JSON Export', async ({ trackData, state1337TrackPlaying, state888TrackPlaying }) => {
       vi.setSystemTime(new Date(2000, 1, 1, 13))
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       handleSpotifyTrackData(trackData)
       handleSpotifyPlayerState({
         ...state1337TrackPlaying,
@@ -205,7 +205,7 @@ describe('History Updater', () => {
 
       await import('../index')
       const { applicationStore } = await import('../../state')
-      const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('../api-handlers')
+      const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('../api-handlers')
       applicationStore.setState({
         userSettings: {
           ...DEFAULT_USER_SETTINGS,

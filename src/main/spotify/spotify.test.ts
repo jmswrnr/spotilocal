@@ -15,7 +15,7 @@ describe('User settings', async () => {
         'write current track when application loaded with paused state',
         async ({ trackData, state1337TrackPaused, expected1337TrackFileWrites }) => {
           await import('./index')
-          const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import(
+          const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import(
             './api-handlers'
           )
           const { applicationStore } = await import('../state')
@@ -37,7 +37,7 @@ describe('User settings', async () => {
       )
       spotiTest('do not empty files when paused', async ({ trackData, state1337TrackPlaying }) => {
         await import('./index')
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('./api-handlers')
         const { applicationStore } = await import('../state')
 
         applicationStore.setState({
@@ -61,7 +61,7 @@ describe('User settings', async () => {
     describe('enabled', () => {
       spotiTest('do empty files when paused', async ({ trackData, expectBlankTextFilesWrites }) => {
         await import('./index')
-        const { handleSpotifyPlayerState, handleSpotifyTrackData } = await import('./api-handlers')
+        const { handleSpotifyPlayerState, handleSpotifyTrackDataV1: handleSpotifyTrackData } = await import('./api-handlers')
         const { applicationStore } = await import('../state')
 
         applicationStore.setState({
