@@ -66,17 +66,17 @@ It doesn't need to send a single API request on top of the default player!
 #### Install
 
 ```bash
-npm install
+pnpm install
 ```
 
 #### Development
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 #### Build
 
 ```bash
-npm run build:win
+pnpm run build:win
 ```

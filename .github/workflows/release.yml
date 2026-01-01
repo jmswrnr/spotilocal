@@ -15,16 +15,22 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install
         
       - name: Build
-        run: npm run build:win
+        run: pnpm run build:win
 
       - name: Release
         uses: softprops/action-gh-release@v2

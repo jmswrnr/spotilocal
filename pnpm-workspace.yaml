@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - bufferutil
+  - electron
+  - electron-winstaller
+  - esbuild
+  - utf-8-validate
