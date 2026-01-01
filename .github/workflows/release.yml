@@ -31,6 +31,8 @@ jobs:
 
       - name: Build
         run: pnpm run build:win
+        env:
+          CI: true
 
       - name: Release
         uses: softprops/action-gh-release@v2

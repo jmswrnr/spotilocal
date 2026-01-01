@@ -4,6 +4,21 @@ import react from '@vitejs/plugin-react'
 
 import { version } from './package.json'
 
+if (process.env.CI) {
+  // Monkey-patch process.stdout methods to prevent clearLine errors in CI
+  //because of [vite:isolate-entries] plugin
+  console.log('Monkey-patching process.stdout methods to prevent clearLine errors in CI')
+  if (!process.stdout.clearLine) {
+    process.stdout.clearLine = () => true
+  }
+  if (!process.stdout.cursorTo) {
+    process.stdout.cursorTo = () => true
+  }
+  if (!process.stdout.moveCursor) {
+    process.stdout.moveCursor = () => true
+  }
+}
+
 const __PLAYER_HOSTNAME__ = 'open.spotify.com'
 const __PLAYER_URL__ = `https://${__PLAYER_HOSTNAME__}/`
 const __LOGIN_URL__ = `https://accounts.spotify.com/login?continue=${encodeURIComponent(
@@ -30,7 +45,7 @@ export const shared = {
 export default defineConfig({
   main: {
     ...shared,
-    define,
+    define
   },
   preload: {
     ...shared,
