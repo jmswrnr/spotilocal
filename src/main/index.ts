@@ -19,6 +19,7 @@ app.commandLine.appendSwitch('wm-window-animations-disabled')
 let tray: Tray
 let spotifyWindow: BrowserWindow
 let settingsWindow: BrowserWindow
+let isQuitting = false
 
 export const fetchImageFromRenderer = (url: string): Promise<Uint8Array> => {
   return new Promise((resolve, reject) => {
@@ -93,7 +94,8 @@ if (!gotTheLock) {
     }
     try {
       await components.whenReady([components.WIDEVINE_CDM_ID])
-    } catch {
+    } catch (error) {
+      console.error(error)
       dialog.showErrorBox(
         'Spotilocal Initialization Error',
         'Unable to load required Widevine CDM components'
@@ -172,8 +174,11 @@ if (!gotTheLock) {
     spotifyWindow.loadURL(__LOGIN_URL__)
 
     spotifyWindow.on('close', (event) => {
-      event.preventDefault()
-      spotifyWindow.hide()
+      if (!isQuitting) {
+        // Don't prevent the close event if the app is q
+        event.preventDefault()
+        spotifyWindow.hide()
+      }
     })
 
     applicationStore.subscribe(
@@ -259,6 +264,10 @@ if (!gotTheLock) {
 
     app.on('window-all-closed', () => {
       app.quit()
+    })
+
+    app.on('before-quit', () => {
+      isQuitting = true
     })
   })
 }
