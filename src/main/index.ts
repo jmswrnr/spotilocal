@@ -1,7 +1,7 @@
 import electron, { app, BrowserWindow, ipcMain, components, Tray, shell, dialog } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon-16.png?asset'
-import { handleSpotifyPlayerState, handleSpotifyTrackDataV1, handleSpotifyTrackDataV2 } from './spotify/api-handlers'
+import { handleSpotifyCanvasData, handleSpotifyPlayerState, handleSpotifyTrackDataV1, handleSpotifyTrackDataV2 } from './spotify/api-handlers'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { applicationStore, remoteStateSlice } from './state'
 import { isUpdateAvailable as getIsUpdateAvailable } from './update-check'
@@ -283,6 +283,8 @@ if (!gotTheLock) {
     ipcMain.on('spotify-track-data', (_event, tracks) => handleSpotifyTrackDataV1(tracks))
 
     ipcMain.on('spotify-track-data-v2', (_event, tracks) => handleSpotifyTrackDataV2(tracks))
+
+    ipcMain.on('spotify-canvas-data', (_event, canvas) => handleSpotifyCanvasData(canvas))
 
     ipcMain.on('spotify-player-state', (_event, player_state) =>
       handleSpotifyPlayerState(player_state)

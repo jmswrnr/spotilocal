@@ -9,9 +9,13 @@ const resolveCurrentState = (state: ApplicationState) => {
   const track = state.trackMap[state.currentTrackUri]
 
   if (track) {
-    if (track.uri !== state.currentTrack?.uri) {
+    const canvasUrl = state.canvasMap[track.uri]?.url || null
+    if (track.uri !== state.currentTrack?.uri || canvasUrl !== state.currentTrack?.canvas) {
       applicationStore.setState({
-        currentTrack: track
+        currentTrack: {
+          ...track,
+          canvas: canvasUrl
+        }
       })
     }
   } else if (state.currentTrack) {

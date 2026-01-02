@@ -39,12 +39,23 @@ type TrackDataV2 = {
     }
   }
   artists: {
-    items:{
+    items: {
       uri: string
       profile: {
         name: string
       }
     }[]
+  }
+}
+
+export type CanvasData = {
+  __typename: 'Track'
+  uri: string
+  canvas: {
+    fileId: string
+    type: 'VIDEO_LOOPING_RANDOM'
+    uri: string
+    url: string
   }
 }
 
@@ -131,6 +142,18 @@ export const handleSpotifyTrackDataV1 = (tracks: TrackDataV1[] | undefined) => {
           }
         }
       }
+    })
+  )
+}
+
+export const handleSpotifyCanvasData = (data: CanvasData) => {
+  if (!data || !data.uri || !data.canvas || data.canvas.type !== 'VIDEO_LOOPING_RANDOM') {
+    return
+  }
+
+  applicationStore.setState(
+    produce<ApplicationState>((state) => {
+      state.canvasMap[data.uri] = data.canvas
     })
   )
 }
