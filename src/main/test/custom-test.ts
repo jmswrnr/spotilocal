@@ -103,6 +103,17 @@ const state888TrackPlaying = {
   }
 } as const
 
+const canvasData = {
+  __typename: 'Track',
+  uri: 'spotify:track:1337',
+  canvas: {
+    fileId: 'canvas-file-1337',
+    type: 'VIDEO_LOOPING_RANDOM',
+    uri: 'spotify:canvas:1337',
+    url: 'https://canvas-url-1337.mp4'
+  }
+} as const
+
 const expectBlankTextFilesWrites = async () => {
   expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal.txt'), '')
   expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Artist.txt'), '')
@@ -172,6 +183,7 @@ export const spotiTest = test.extend({
   expectBlankTextFilesWrites: (async ({}, use) =>
     use(expectBlankTextFilesWrites)) as typeof expectBlankTextFilesWrites,
   trackData,
+  canvasData,
   state1337TrackPaused,
   state1337TrackPlaying,
   state888TrackPaused,
