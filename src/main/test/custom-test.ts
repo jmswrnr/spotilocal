@@ -155,6 +155,12 @@ const csvWriter = {
   on: vi.fn().mockImplementation(() => csvWriter)
 }
 
+vi.mock('@electron-toolkit/utils', () => ({
+  is: {
+    dev: false
+  }
+}))
+
 vi.mock('@fast-csv/format', () => ({
   writeToPath: vi.fn().mockImplementation(() => csvWriter)
 }))
