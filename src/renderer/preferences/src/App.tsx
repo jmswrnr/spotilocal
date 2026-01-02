@@ -238,9 +238,7 @@ export const App = () => {
           }
         >
           <div className="icon">
-            {typeof dev_showSpotifyPlayer !== 'undefined' ? (
-              <input type="checkbox" checked={dev_showSpotifyPlayer} readOnly />
-            ) : null}
+            <input type="checkbox" checked={dev_showSpotifyPlayer ?? false} readOnly />
           </div>
           <div className="text"> Show Spotify Player</div>
         </button>
