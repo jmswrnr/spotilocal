@@ -7,7 +7,7 @@ import { applicationStore, remoteStateSlice } from './state'
 import { isUpdateAvailable as getIsUpdateAvailable } from './update-check'
 import { autoPlacement, computePosition, shift } from '@floating-ui/core'
 import { ApplicationState, RemoteApplicationState, UserSettings } from '@shared/types/state'
-import { SETTINGS_WINDOW_SIZE } from './constants'
+import { outputDirectory, SETTINGS_WINDOW_SIZE } from './constants'
 import { produce } from 'immer'
 import { shallow } from 'zustand/shallow'
 import './spotify'
@@ -298,6 +298,10 @@ if (!gotTheLock) {
       applicationStore.setState({
         systemClockOffset: systemClockOffset
       })
+    })
+
+    ipcMain.on('open-output-directory', () => {
+      shell.openPath(outputDirectory)
     })
 
     app.on('window-all-closed', () => {

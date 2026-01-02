@@ -41,7 +41,7 @@ export const App = () => {
     webWidgetPortError,
     enableHistory,
     isDevMode,
-    dev_showSpotifyPlayer,
+    dev_showSpotifyPlayer
   } = useRemoteApplicationStore((state) => ({
     isUpdateAvailable: state?.isUpdateAvailable,
     isLoggedIn: state?.isLoggedIn,
@@ -56,7 +56,7 @@ export const App = () => {
     webWidgetPortError: state?.webWidgetPortError,
     enableHistory: state?.userSettings.enableHistory,
     isDevMode: state?.isDevMode,
-    dev_showSpotifyPlayer: state?.userSettings.dev_showSpotifyPlayer,
+    dev_showSpotifyPlayer: state?.userSettings.dev_showSpotifyPlayer
   }))
 
   useLayoutEffect(() => {
@@ -228,22 +228,28 @@ export const App = () => {
             <div className="icon"></div>
             <div className="text">Dev Tools</div>
           </button>
-          
-        <button
-          className="item"
-          onClick={() =>
-            window.electron.ipcRenderer.send('set-user-settings', {
-              dev_showSpotifyPlayer: !dev_showSpotifyPlayer
-            })
-          }
-        >
-          <div className="icon">
-            <input type="checkbox" checked={dev_showSpotifyPlayer ?? false} readOnly />
-          </div>
-          <div className="text"> Show Spotify Player</div>
-        </button>
+          <div className="hr" />
+          <button
+            className="item"
+            onClick={() =>
+              window.electron.ipcRenderer.send('set-user-settings', {
+                dev_showSpotifyPlayer: !dev_showSpotifyPlayer
+              })
+            }
+          >
+            <div className="icon">
+              <input type="checkbox" checked={dev_showSpotifyPlayer ?? false} readOnly />
+            </div>
+            <div className="text"> Show Spotify Player</div>
+          </button>
         </div>
       ) : null}
+      <div className="section-area">
+        <button className="item" onClick={() => window.electron.ipcRenderer.send('open-output-directory')}>
+          <div className="icon"></div>
+          <div className="text">Open output folder</div>
+        </button>
+      </div>
       <div className="section-area">
         {isUpdateAvailable ? (
           <button className="item" onClick={() => window.electron.ipcRenderer.send('get-update')}>
