@@ -9,6 +9,7 @@ import { settingsDiskStore } from './disk-storage'
 import { shallow } from 'zustand/shallow'
 import { DEFAULT_USER_SETTINGS } from './constants'
 import { loadHistoryJson } from './spotify/loaders/history'
+import { is } from '@electron-toolkit/utils'
 
 export const userStateSlice = (state: RemoteApplicationState): UserExposedState => ({
   isPlaying: state.isPlaying,
@@ -21,6 +22,7 @@ export const userStateSlice = (state: RemoteApplicationState): UserExposedState 
 })
 
 export const remoteStateSlice = (state: ApplicationState): RemoteApplicationState => ({
+  isDevMode: state.isDevMode,
   isUpdateAvailable: state.isUpdateAvailable,
   isLoggedIn: state.isLoggedIn,
   userSettings: state.userSettings,
@@ -32,6 +34,7 @@ const historyJson = loadHistoryJson()
 
 export const applicationStore = create<ApplicationState>()(
   subscribeWithSelector((_set) => ({
+    isDevMode: is.dev,
     isUpdateAvailable: null,
     isLoggedIn: null,
     isPlaying: false,
