@@ -1,6 +1,7 @@
 import { spotiTest } from '../../test/custom-test'
 
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import { beforeEach, describe, expect, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS } from '../../constants'
 
@@ -37,7 +38,7 @@ describe('saveJsonFile', async () => {
       })
 
       expect(fs.writeFile).toBeCalledWith(
-        '\\mocked-output\\dir\\Spotilocal.json',
+        path.join('/mocked-output/dir/', 'Spotilocal.json'),
         '{\n' +
           '  "isPlaying": false,\n' +
           '  "positionMs": 1337,\n' +

@@ -1,6 +1,7 @@
 import { spotiTest } from '../test/custom-test'
 
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import { beforeEach, describe, expect, vi } from 'vitest'
 import { DEFAULT_USER_SETTINGS, transparent1px } from '../constants'
 
@@ -22,7 +23,7 @@ describe('Initializes files', () => {
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
-        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal.png')
+        expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal.png'))
       })
     ])
   })
@@ -43,13 +44,13 @@ describe('Initializes files', () => {
     initFiles()
     await Promise.all([
       vi.waitFor(() => {
-        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Small.png')
+        expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Small.png'))
       }),
       vi.waitFor(() => {
-        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Medium.png')
+        expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'))
       }),
       vi.waitFor(() => {
-        expect(fs.unlink).toBeCalledWith('\\mocked-output\\dir\\Spotilocal_Large.png')
+        expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Large.png'))
       })
     ])
   })
@@ -71,19 +72,19 @@ describe('Initializes files', () => {
     await Promise.all([
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          '\\mocked-output\\dir\\Spotilocal_Small.png',
+          path.join('/mocked-output/dir/', 'Spotilocal_Small.png'),
           transparent1px
         )
       }),
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          '\\mocked-output\\dir\\Spotilocal_Medium.png',
+          path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'),
           transparent1px
         )
       }),
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          '\\mocked-output\\dir\\Spotilocal_Large.png',
+          path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
           transparent1px
         )
       })
