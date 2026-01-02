@@ -1,4 +1,4 @@
-import { Track, UserExposedState } from '@shared/types/state'
+import { ResolvedTrack, UserExposedState } from '@shared/types/state'
 import fs from 'node:fs/promises'
 import { jsonOutput } from '../../constants'
 import { applicationStore, userStateSlice } from '../../state'
@@ -9,13 +9,16 @@ type JsonOutput = Omit<UserExposedState, 'currentTrack'> & {
 }
 
 const cleanCurrentTrack = (
-  currentTrack: Track | undefined
-): Omit<Track, 'albumUri' | 'artistUris'> | undefined => {
+  currentTrack: ResolvedTrack | undefined
+): Omit<ResolvedTrack, 'albumUri' | 'artistUris'> | undefined => {
   if (!currentTrack) {
     return undefined
   }
-  const { albumUri, artistUris, ...rest } = currentTrack
-  return rest
+  const { albumUri, artistUris, canvas, ...rest } = currentTrack
+  return {
+    ...rest,
+    canvas: canvas || null
+  }
 }
 
 const handleUserExposedStateSliceUpdate = (slice: UserExposedState, saveJsonFile: boolean) => {

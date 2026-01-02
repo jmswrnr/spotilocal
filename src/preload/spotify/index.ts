@@ -1,5 +1,17 @@
 import { ipcRenderer } from 'electron'
 
+try {
+  // Delete all IndexedDB databases
+  // This ensures queries are not cached so we can hook the response
+  indexedDB.databases().then(databases => {
+    databases.forEach(db => {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name)
+      }
+    })
+  })
+} catch {}
+
 if (window.fetch.toString().includes('native')) {
   const superFetch = window.fetch
   window.fetch = async (...args) => {
@@ -8,8 +20,13 @@ if (window.fetch.toString().includes('native')) {
         case args[0].includes('/pathfinder/v2/query'): {
           let response = await superFetch(...args)
           const data = (await response.clone().json())?.data
-          if(data && typeof data === 'object' && 'tracks' in data && Array.isArray(data.tracks)) { 
-            ipcRenderer.send('spotify-track-data-v2', data.tracks)
+          if (data && typeof data === 'object') {
+            if ('tracks' in data && Array.isArray(data.tracks)) {
+              ipcRenderer.send('spotify-track-data-v2', data.tracks)
+            }
+            if('trackUnion' in data && typeof data.trackUnion === 'object' && 'canvas' in data.trackUnion && data.trackUnion.canvas && data.trackUnion.uri) {
+              ipcRenderer.send('spotify-canvas-data', data.trackUnion)
+            }
           }
           return response
         }
@@ -23,6 +40,7 @@ if (window.fetch.toString().includes('native')) {
           let response = await superFetch(...args)
           const player_state = (await response.clone().json())?.player_state
           player_state && ipcRenderer.send('spotify-player-state', player_state)
+          console.log('spotify-player-state', player_state)
           return response
         }
         case args[0].includes('/melody/v1/time'): {

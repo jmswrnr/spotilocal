@@ -45,6 +45,7 @@ export const applicationStore = create<ApplicationState>()(
     albumMap: historyJson?.albumMap || {},
     artistMap: historyJson?.artistMap || {},
     imageUriUrlMap: {},
+    canvasMap: {},
     webWidgetPortError: false,
     playbackHistory: historyJson?.history || [],
     latestStoredPlaybackId: historyJson?.latestPlaybackId,

@@ -11,6 +11,10 @@ export type Track = {
   artistUris: string[]
 }
 
+export type ResolvedTrack = Track & {
+  canvas: string | null
+}
+
 export type Album = {
   uri: string
   name: string
@@ -20,6 +24,13 @@ export type Images = {
   image_small?: string
   image_medium?: string
   image_large?: string
+}
+
+export type CanvasFile = {
+  fileId: string
+  type: string
+  uri: string
+  url: string
 }
 
 export type ResolvedAlbum = Album & Partial<Images>
@@ -46,7 +57,7 @@ export interface UserExposedState {
   positionMs: number
   durationMs: number
   lastUpdatedAt?: number
-  currentTrack?: Track
+  currentTrack?: ResolvedTrack
   currentAlbum?: ResolvedAlbum
   currentArtists?: Artist[]
 }
@@ -64,7 +75,10 @@ export interface ApplicationState extends RemoteApplicationState {
   trackMap: Record<string, Track | undefined>
   albumMap: Record<string, Album | undefined>
   artistMap: Record<string, Artist | undefined>
+  // imageUriUrlMap maps album.uri to imagedata
   imageUriUrlMap: Record<string, Images>
+  // canvasMap maps track.uri to canvas file data
+  canvasMap: Record<string, CanvasFile | undefined>
   currentPlaybackId?: string
   latestStoredPlaybackId?: string
   playbackHistory: TrackHistoryEntry[]
