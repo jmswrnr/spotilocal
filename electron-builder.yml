@@ -14,8 +14,17 @@ asarUnpack:
   - resources/**
 win:
   executableName: Spotilocal
-  target: portable
-  artifactName: ${productName}-v${version}.${ext}
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+nsis:
+  artifactName: ${productName}-v${version}-installer.${ext}
+portable:
+  artifactName: ${productName}-v${version}-portable.${ext}
 npmRebuild: false
 electronDownload:
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
