@@ -1,8 +1,10 @@
 import path from 'node:path'
-import { outputDirectory } from './env'
 import type { Size } from 'electron'
 import { UserSettings } from '@shared/types/state'
 export const filePrefix = 'Spotilocal'
+import { app } from 'electron'
+
+export const outputDirectory = path.join(app.getPath('userData'), 'Output')
 
 export const txtTrack = path.join(outputDirectory, `${filePrefix}_Track.txt`)
 export const txtURILegacy = path.join(outputDirectory, `${filePrefix}_URI.txt`)
