@@ -66,10 +66,6 @@ const toggleSettingsWindow = async () => {
     trayPositionOnWindowOpen = tray.getBounds()
     await positionWindowToTray(settingsWindow)
     settingsWindow.show()
-
-    if (is.dev) {
-      settingsWindow.webContents.openDevTools({ mode: 'detach' })
-    }
   }
 }
 
@@ -135,6 +131,18 @@ if (!gotTheLock) {
       positionWindowToTray(settingsWindow)
     })
 
+    settingsWindow.on('show', () => {
+      if(is.dev && !settingsWindow.webContents.isDevToolsOpened()) {
+        settingsWindow.webContents.openDevTools({ mode: 'detach' })
+      }
+    })
+
+    settingsWindow.on('hide', () => {
+      if(is.dev && settingsWindow.webContents.isDevToolsOpened()) {
+        settingsWindow.webContents.closeDevTools()
+      }
+    })
+
     if (!is.dev) {
       settingsWindow.on('blur', () => {
         settingsWindow.hide()
@@ -147,12 +155,15 @@ if (!gotTheLock) {
     tray.setTitle('Spotilocal')
     tray.setToolTip('Spotilocal')
 
+    const devModeShowSpotifyWindow = (is.dev && applicationStore.getState().userSettings.dev_showSpotifyPlayer) ?? false
+
     spotifyWindow = new BrowserWindow({
       width: 1280,
       height: 800,
-      show: false,
+      show: devModeShowSpotifyWindow ?? false,
       webPreferences: {
         sandbox: false,
+        devTools: true,
         partition: 'persist:spotify',
         contextIsolation: false,
         preload: join(__dirname, '../preload/spotify.js')
@@ -181,10 +192,33 @@ if (!gotTheLock) {
       }
     })
 
+    spotifyWindow.on('show', () => {
+      if(is.dev && !spotifyWindow.webContents.isDevToolsOpened()) {
+        spotifyWindow.webContents.openDevTools({ mode: 'detach' })
+      }
+    })
+
+    spotifyWindow.on('hide', () => {
+      if(is.dev && spotifyWindow.webContents.isDevToolsOpened()) {
+        spotifyWindow.webContents.closeDevTools()
+      }
+    })
+
     applicationStore.subscribe(
-      (state) => state.isLoggedIn,
-      (isLoggedIn) => {
-        isLoggedIn ? spotifyWindow.hide() : spotifyWindow.show()
+      (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        dev_showSpotifyPlayer: state.userSettings.dev_showSpotifyPlayer,
+      }),
+      ({isLoggedIn, dev_showSpotifyPlayer}) => {
+        if(is.dev && dev_showSpotifyPlayer) {
+          spotifyWindow.show()
+        } else {
+          if(isLoggedIn) {
+            spotifyWindow.hide()
+          } else {
+            spotifyWindow.show()
+          }
+        }
       }
     )
 

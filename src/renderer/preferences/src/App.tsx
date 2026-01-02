@@ -39,7 +39,9 @@ export const App = () => {
     enableWebWidget,
     webWidgetPort,
     webWidgetPortError,
-    enableHistory
+    enableHistory,
+    isDevMode,
+    dev_showSpotifyPlayer,
   } = useRemoteApplicationStore((state) => ({
     isUpdateAvailable: state?.isUpdateAvailable,
     isLoggedIn: state?.isLoggedIn,
@@ -52,7 +54,9 @@ export const App = () => {
     enableWebWidget: state?.userSettings.enableWebWidget,
     webWidgetPort: state?.userSettings.webWidgetPort,
     webWidgetPortError: state?.webWidgetPortError,
-    enableHistory: state?.userSettings.enableHistory
+    enableHistory: state?.userSettings.enableHistory,
+    isDevMode: state?.isDevMode,
+    dev_showSpotifyPlayer: state?.userSettings.dev_showSpotifyPlayer,
   }))
 
   useLayoutEffect(() => {
@@ -218,6 +222,30 @@ export const App = () => {
           </>
         ) : null}
       </div>
+      {isDevMode ? (
+        <div className="section-area">
+          <button className="item" disabled>
+            <div className="icon"></div>
+            <div className="text">Dev Tools</div>
+          </button>
+          
+        <button
+          className="item"
+          onClick={() =>
+            window.electron.ipcRenderer.send('set-user-settings', {
+              dev_showSpotifyPlayer: !dev_showSpotifyPlayer
+            })
+          }
+        >
+          <div className="icon">
+            {typeof dev_showSpotifyPlayer !== 'undefined' ? (
+              <input type="checkbox" checked={dev_showSpotifyPlayer} readOnly />
+            ) : null}
+          </div>
+          <div className="text"> Show Spotify Player</div>
+        </button>
+        </div>
+      ) : null}
       <div className="section-area">
         {isUpdateAvailable ? (
           <button className="item" onClick={() => window.electron.ipcRenderer.send('get-update')}>

@@ -30,6 +30,7 @@ export type TrackHistoryEntry = {
 }
 
 export type UserSettings = {
+  dev_showSpotifyPlayer?: boolean
   emptyFilesWhenPaused: boolean
   saveJsonFile: boolean
   saveSmallImage: boolean
@@ -51,6 +52,7 @@ export interface UserExposedState {
 }
 
 export interface RemoteApplicationState extends UserExposedState {
+  isDevMode: boolean
   webWidgetPortError: boolean
   isUpdateAvailable: boolean | null
   isLoggedIn: boolean | null
