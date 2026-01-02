@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "packageManager": "pnpm@10.27.0",
   "main": "./out/main/index.js",
+  "repository": "github:jmswrnr/spotilocal",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",

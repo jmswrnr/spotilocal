@@ -28,4 +28,7 @@ portable:
 npmRebuild: false
 electronDownload:
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
-publish: null
+publish:
+  provider: github
+  owner: jmswrnr
+  repo: spotilocal
