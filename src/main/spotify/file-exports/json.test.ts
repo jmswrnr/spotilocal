@@ -38,7 +38,7 @@ describe('saveJsonFile', async () => {
       })
 
       expect(fs.writeFile).toBeCalledWith(
-        path.join('/mocked-output/dir/', 'Spotilocal.json'),
+        path.join('/mocked-output/dir/Output/', 'Spotilocal.json'),
         '{\n' +
           '  "isPlaying": false,\n' +
           '  "positionMs": 1337,\n' +
@@ -93,7 +93,7 @@ describe('saveJsonFile', async () => {
       })
 
       expect(fs.writeFile).toBeCalledWith(
-        path.join('/mocked-output/dir/', 'Spotilocal.json'),
+        path.join('/mocked-output/dir/Output/', 'Spotilocal.json'),
         '{\n' +
           '  "isPlaying": false,\n' +
           '  "positionMs": 1337,\n' +

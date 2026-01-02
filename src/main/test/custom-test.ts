@@ -115,24 +115,26 @@ const canvasData = {
 } as const
 
 const expectBlankTextFilesWrites = async () => {
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal.txt'), '')
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Artist.txt'), '')
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Track.txt'), '')
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Album.txt'), '')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal.txt'), '')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Artist.txt'), '')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Track.txt'), '')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Album.txt'), '')
 }
 
 const expected1337TrackFileWrites = async () => {
   expect(fs.writeFile).toBeCalledWith(
-    path.join('/mocked-output/dir/', 'Spotilocal.txt'),
+    path.join('/mocked-output/dir/Output/', 'Spotilocal.txt'),
     '1337 Track - 1337 Artist'
   )
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Artist.txt'), '1337 Artist')
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Track.txt'), '1337 Track')
-  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Album.txt'), '1337 Album')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Artist.txt'), '1337 Artist')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Track.txt'), '1337 Track')
+  expect(fs.writeFile).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Album.txt'), '1337 Album')
 }
 
-vi.mock('../env', () => ({
-  outputDirectory: '/mocked-output/dir/'
+vi.mock('electron', () => ({
+  app: {
+    getPath: vi.fn().mockReturnValue('/mocked-output/dir/')
+  }
 }))
 
 vi.mock('../index', () => ({
@@ -156,7 +158,8 @@ vi.mock('node:fs/promises', () => ({
 vi.mock('node:fs', () => ({
   default: {
     readFileSync: vi.fn()
-  }
+  },
+  mkdirSync: vi.fn()
 }))
 
 vi.mock('node:os', () => ({

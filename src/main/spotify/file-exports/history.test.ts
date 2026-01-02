@@ -30,12 +30,12 @@ describe('History Exporter', () => {
     expect(
       vi
         .mocked(fs.writeFile)
-        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/', 'Spotilocal_History.txt'))
+        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/Output/', 'Spotilocal_History.txt'))
     ).not.toBe(true)
     expect(
       vi
         .mocked(fs.writeFile)
-        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/', 'Spotilocal_History.json'))
+        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/Output/', 'Spotilocal_History.json'))
     ).not.toBe(true)
     expect(writeToPath).not.toBeCalled()
   })
@@ -51,12 +51,12 @@ describe('History Exporter', () => {
     expect(
       vi
         .mocked(fs.writeFile)
-        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/', 'Spotilocal_History.txt'))
+        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/Output/', 'Spotilocal_History.txt'))
     ).toBe(true)
     expect(
       vi
         .mocked(fs.writeFile)
-        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/', 'Spotilocal_History.json'))
+        .mock.calls.some((call) => call[0] === path.join('/mocked-output/dir/Output/', 'Spotilocal_History.json'))
     ).toBe(true)
     expect(writeToPath).toBeCalled()
   })
@@ -86,7 +86,7 @@ describe('History Exporter', () => {
       })
 
       expect(writeToPath).toBeCalledWith(
-        path.join('/mocked-output/dir/', 'Spotilocal_History.csv'),
+        path.join('/mocked-output/dir/Output/', 'Spotilocal_History.csv'),
         [
           ['1337 Track', '1337 Artist', '1337 Album', '2000-02-01 13:00:00'],
           ['888 Track', '888 Artist', '888 Album', '2000-02-01 15:00:00']
@@ -110,7 +110,7 @@ describe('History Exporter', () => {
       })
 
       expect(fs.writeFile).toBeCalledWith(
-        path.join('/mocked-output/dir/', 'Spotilocal_History.txt'),
+        path.join('/mocked-output/dir/Output/', 'Spotilocal_History.txt'),
         '1337 Track - 1337 Artist\n888 Track - 888 Artist',
         'utf-8'
       )
@@ -131,7 +131,7 @@ describe('History Exporter', () => {
       })
 
       expect(fs.writeFile).toBeCalledWith(
-        path.join('/mocked-output/dir/', 'Spotilocal_History.json'),
+        path.join('/mocked-output/dir/Output/', 'Spotilocal_History.json'),
         '{\n' +
           '  "trackMap": {\n' +
           '    "spotify:track:1337": {\n' +

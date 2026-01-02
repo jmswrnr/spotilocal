@@ -37,13 +37,13 @@ describe('Cover Art Sizes', async () => {
       })
       await Promise.all([
         vi.waitFor(() => {
-          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Small.png'))
+          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Small.png'))
         }),
         vi.waitFor(() => {
-          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'))
+          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Medium.png'))
         }),
         vi.waitFor(() => {
-          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/', 'Spotilocal_Large.png'))
+          expect(fs.unlink).toBeCalledWith(path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'))
         })
       ])
     })
@@ -73,19 +73,19 @@ describe('Cover Art Sizes', async () => {
       await Promise.all([
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Small.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Small.png'),
             transparent1px
           )
         }),
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Medium.png'),
             transparent1px
           )
         }),
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'),
             transparent1px
           )
         })
@@ -113,7 +113,7 @@ describe('Cover Art Sizes', async () => {
         await Promise.all([
           vi.waitFor(() => {
             expect(fs.writeFile).toBeCalledWith(
-              path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
+              path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'),
               'mock-fetched-image-https://1337-640-test-image.png'
             )
           })
@@ -122,7 +122,7 @@ describe('Cover Art Sizes', async () => {
         await Promise.all([
           vi.waitFor(() => {
             expect(fs.writeFile).toBeCalledWith(
-              path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
+              path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'),
               transparent1px
             )
           })
@@ -149,19 +149,19 @@ describe('Cover Art Sizes', async () => {
       await Promise.all([
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Small.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Small.png'),
             'mock-fetched-image-https://1337-64-test-image.png'
           )
         }),
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Medium.png'),
             'mock-fetched-image-https://1337-300-test-image.png'
           )
         }),
         vi.waitFor(() => {
           expect(fs.writeFile).toBeCalledWith(
-            path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
+            path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'),
             'mock-fetched-image-https://1337-640-test-image.png'
           )
         })
@@ -187,7 +187,7 @@ describe('Cover Art Sizes', async () => {
     await Promise.all([
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          path.join('/mocked-output/dir/', 'Spotilocal_Small.png'),
+          path.join('/mocked-output/dir/Output/', 'Spotilocal_Small.png'),
           'mock-fetched-image-https://1337-64-test-image.png'
         )
       })
@@ -212,7 +212,7 @@ describe('Cover Art Sizes', async () => {
     await Promise.all([
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          path.join('/mocked-output/dir/', 'Spotilocal_Medium.png'),
+          path.join('/mocked-output/dir/Output/', 'Spotilocal_Medium.png'),
           'mock-fetched-image-https://1337-300-test-image.png'
         )
       })
@@ -237,7 +237,7 @@ describe('Cover Art Sizes', async () => {
     await Promise.all([
       vi.waitFor(() => {
         expect(fs.writeFile).toBeCalledWith(
-          path.join('/mocked-output/dir/', 'Spotilocal_Large.png'),
+          path.join('/mocked-output/dir/Output/', 'Spotilocal_Large.png'),
           'mock-fetched-image-https://1337-640-test-image.png'
         )
       })
